@@ -9,7 +9,7 @@ ${h.text2html(ctx.description or '', mode='p', sep='\n')}
 ${request.get_datatable('values', h.models.Value, language=ctx.variety).render()}
 
 <%def name="sidebar()">
-    <%util:well title="Author">
+    <%util:well title="Informant">
         ${h.linked_contributors(request, ctx)}
         ${h.cite_button(request, ctx)}
     </%util:well>

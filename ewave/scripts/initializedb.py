@@ -344,7 +344,7 @@ def examples(args, id_):
             except:
                 continue
             ps = tds[2].find_all('p')
-            if len(ps) % 3 == 0:
+            if id_ != 53 and len(ps) % 3 == 0:
                 for i in range(0, len(ps), 3):
                     primary, gloss, translation = ps[i:i+3]
                     yield (fid, text(primary), text(gloss), text(translation))
