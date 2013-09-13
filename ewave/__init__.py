@@ -8,7 +8,7 @@ from clld import interfaces
 # we must make sure custom models are known at database initialization!
 from ewave import models
 from ewave.maps import LanguageMap
-from ewave.datatables import WaveContributions
+from ewave.datatables import WaveContributions, Features
 from ewave.adapters import GeoJsonContributions
 
 """
@@ -130,4 +130,5 @@ def main(global_config, **settings):
         name=GeoJsonContributions.mimetype)
 
     config.register_datatable('contributions', WaveContributions)
+    config.register_datatable('parameters', Features)
     return config.make_wsgi_app()

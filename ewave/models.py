@@ -4,6 +4,7 @@ from sqlalchemy import (
     String,
     Unicode,
     Integer,
+    Float,
     Boolean,
     ForeignKey,
     UniqueConstraint,
@@ -15,7 +16,9 @@ from sqlalchemy.ext.hybrid import hybrid_property
 from clld import interfaces
 from clld.util import DeclEnum
 from clld.db.meta import Base, CustomModelMixin
-from clld.db.models.common import Language, Contribution, IdNameDescriptionMixin
+from clld.db.models.common import (
+    Parameter, Language, Contribution, IdNameDescriptionMixin,
+)
 
 
 class VarietyType(Base, IdNameDescriptionMixin):
@@ -23,6 +26,10 @@ class VarietyType(Base, IdNameDescriptionMixin):
 
 
 class Region(Base, IdNameDescriptionMixin):
+    pass
+
+
+class FeatureCategory(Base, IdNameDescriptionMixin):
     pass
 
 
@@ -44,3 +51,12 @@ class WaveContribution(Contribution, CustomModelMixin):
     pk = Column(Integer, ForeignKey('contribution.pk'), primary_key=True)
     variety_pk = Column(Integer, ForeignKey('variety.pk'))
     variety = relationship(Variety, backref=backref('contribution', uselist=False))
+
+
+@implementer(interfaces.IParameter)
+class Feature(Parameter, CustomModelMixin):
+    pk = Column(Integer, ForeignKey('parameter.pk'), primary_key=True)
+    category_pk = Column(Integer, ForeignKey('featurecategory.pk'))
+    category = relationship(FeatureCategory, backref=backref('features'))
+    attestation = Column(Float)
+    pervasiveness = Column(Float)
