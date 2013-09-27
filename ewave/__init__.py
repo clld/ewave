@@ -8,7 +8,7 @@ from clld import interfaces
 # we must make sure custom models are known at database initialization!
 from ewave import models
 from ewave.maps import LanguageMap
-from ewave.datatables import WaveContributions, Features, Values
+from ewave.datatables import WaveContributions, Features, Values, Sentences
 from ewave.adapters import GeoJsonContributions
 
 """
@@ -100,11 +100,11 @@ def link_attrs(req, obj, **kw):
     if interfaces.ILanguage.providedBy(obj):
         # we are about to link to a language details page: redirect to contribution page!
         kw['href'] = req.route_url('contribution', id=obj.id, **kw.pop('url_kw', {}))
-    if interfaces.IParameter.providedBy(obj):
-        # we are about to link to a language details page: redirect to contribution page!
-        kw['label'] = '%s %s' % (obj.id, obj.name)
+    #if interfaces.IParameter.providedBy(obj):
+    #    kw['label'] = '%s %s' % (obj.id, obj.name)
     if interfaces.IValueSet.providedBy(obj):
         kw['title'] = obj.values[0].domainelement.description
+        kw['label'] = u'%s - %s' % (obj.values[0].domainelement.name, obj.values[0].domainelement.description)
     return kw
 
 
@@ -137,4 +137,5 @@ def main(global_config, **settings):
     config.register_datatable('contributions', WaveContributions)
     config.register_datatable('parameters', Features)
     config.register_datatable('values', Values)
+    config.register_datatable('sentences', Sentences)
     return config.make_wsgi_app()

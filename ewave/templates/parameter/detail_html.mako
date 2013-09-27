@@ -21,17 +21,10 @@ ${request.map.render()}
     </ul>
     <div class="tab-content" style="overflow: visible;">
         <div id="tab1" class="tab-pane active">
-            <% dt = request.registry.getUtility(h.interfaces.IDataTable, 'values'); dt = dt(request, h.models.Value, parameter=ctx) %>
-            ${dt.render()}
+            ${request.get_datatable('values', h.models.Value, parameter=ctx).render()}
         </div>
         <div id="tab2" class="tab-pane">
-            <%util:table items="${examples}" args="item">
-                <%def name="head()">
-                    <th>Example</th><th>Variety</th>
-                </%def>
-                <td>${h.link(request, item)}</td>
-                <td>${h.link(request, item.language)}</td>
-            </%util:table>
+            ${request.get_datatable('sentences', h.models.Sentence, parameter=ctx).render()}
         </div>
     </div>
 </div>

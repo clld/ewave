@@ -7,11 +7,12 @@ from clld.db.models import common
 from clld.db.meta import DBSession
 from clld.web import datatables
 from clld.web.datatables.base import (
-    Col, LinkCol, filter_number, IdCol, LinkToMapCol,
+    Col, LinkCol, filter_number, IdCol, LinkToMapCol, PercentCol,
 )
 from clld.web.datatables.value import ValueNameCol, ValueLanguageCol, ParameterCol
 from clld.web.datatables.value import _LinkToMapCol as ValueLinkToMapCol
 from clld.web.datatables.contribution import ContributorsCol, CitationCol
+from clld.web.datatables.sentence import Sentences as BaseSentences
 from clld.web.util.helpers import map_marker_img
 
 from ewave.models import Region, VarietyType, Variety, Feature, FeatureCategory
@@ -20,6 +21,13 @@ from ewave.models import Region, VarietyType, Variety, Feature, FeatureCategory
 def choices(col, order=None):
     order = order or col.pk
     return list((o.pk, o.name) for o in DBSession.query(col).order_by(order))
+
+
+class Sentences(BaseSentences):
+    def col_defs(self):
+        return filter(
+            lambda col: col.name not in ['type', 'd', 'analyzed', 'gloss', 'description'],
+            super(Sentences, self).col_defs())
 
 
 #
@@ -31,10 +39,10 @@ class _LinkToMapCol(LinkToMapCol):
 
 
 class RegionCol(Col):
-    def __init__(self, dt, **kw):
+    def __init__(self, dt, name, **kw):
         kw['choices'] = choices(Region)
         kw['sTitle'] = 'World Region'
-        super(RegionCol, self).__init__(dt, 'region', **kw)
+        super(RegionCol, self).__init__(dt, name, **kw)
 
     def format(self, item):
         return item.variety.region.name
@@ -47,10 +55,10 @@ class RegionCol(Col):
 
 
 class TypeCol(Col):
-    def __init__(self, dt, name='id', **kw):
+    def __init__(self, dt, name, **kw):
         kw['choices'] = choices(VarietyType)
         kw['sTitle'] = 'Variety Type'
-        super(TypeCol, self).__init__(dt, 'type', **kw)
+        super(TypeCol, self).__init__(dt, name, **kw)
 
     def format(self, item):
         return map_marker_img(self.dt.req, item.variety) + item.variety.type.name
@@ -78,9 +86,9 @@ class WaveContributions(datatables.Contributions):
             #OrderNumberCol(self),
             LinkCol(self, 'name', sTitle='Variety'),
             ContributorsCol(self, 'contributors', bSearchable=False, bSortable=False),
-            TypeCol(self),
-            RegionCol(self),
-            _LinkToMapCol(self),
+            TypeCol(self, 'type'),
+            RegionCol(self, 'region'),
+            _LinkToMapCol(self, 'm'),
             CitationCol(self, 'cite', bSearchable=False, bSortable=False),
         ]
 
@@ -103,9 +111,9 @@ class FeatureNumberCol(IdCol):
 
 
 class CategoryCol(Col):
-    def __init__(self, dt, name='category', **kw):
+    def __init__(self, dt, name, **kw):
         kw['choices'] = choices(FeatureCategory)
-        super(CategoryCol, self).__init__(dt, 'area', **kw)
+        super(CategoryCol, self).__init__(dt, name, **kw)
 
     def format(self, item):
         return item.category.name
@@ -117,19 +125,6 @@ class CategoryCol(Col):
         return Feature.category_pk
 
 
-class PercentCol(Col):
-    def __init__(self, dt, **kw):
-        kw['sClass'] = 'right'
-        kw.setdefault('input_size', 'small')
-        super(PercentCol, self).__init__(dt, **kw)
-
-    def search(self, qs):
-        return filter_number(self.model_col, qs, qs_weight=0.01)
-
-    def format(self, item):
-        return '%.0f%%' % (100 * getattr(item, self.model_col.name),)
-
-
 class Features(datatables.Parameters):
     def base_query(self, query):
         return query.join(Feature.category)
@@ -138,9 +133,9 @@ class Features(datatables.Parameters):
         return [
             FeatureNumberCol(self),
             LinkCol(self, 'name', sTitle='Feature name'),
-            PercentCol(self, name='attestation', model_col=Feature.attestation),
-            PercentCol(self, name='pervasiveness', model_col=Feature.pervasiveness),
-            CategoryCol(self),
+            PercentCol(self, 'attestation', model_col=Feature.attestation),
+            PercentCol(self, 'pervasiveness', model_col=Feature.pervasiveness),
+            CategoryCol(self, 'area'),
         ]
 
 
@@ -164,13 +159,12 @@ class _TypeCol(TypeCol):
 
 
 class _ValueNameCol(ValueNameCol):
-    def __init__(self, dt, **kw):
-        kw['name'] = 'value'
+    def __init__(self, dt, name, **kw):
         if dt.parameter:
             kw['choices'] = [
                 (de.name, '%s %s' % (de.name, de.description))
                 for de in dt.parameter.domain]
-        super(_ValueNameCol, self).__init__(dt, **kw)
+        super(_ValueNameCol, self).__init__(dt, name, **kw)
 
     def order(self):
         return common.DomainElement.number
@@ -201,19 +195,19 @@ class Values(datatables.Values):
         if self.parameter:
             return [
                 ValueLanguageCol(self, 'variety'),
-                _RegionCol(self),
-                _TypeCol(self),
-                _ValueNameCol(self),
-                ValueLinkToMapCol(self),
+                _RegionCol(self, 'region'),
+                _TypeCol(self, 'type'),
+                _ValueNameCol(self, 'name'),
+                ValueLinkToMapCol(self, 'm'),
             ]
         if self.language:
             return [
                 ParameterCol(self, 'feature'),
-                _ValueNameCol(self),
+                _ValueNameCol(self, 'name'),
                 # TODO: feature category
             ]
         return [
-            _ValueNameCol(self),
+            _ValueNameCol(self, 'name'),
             ValueLanguageCol(self, 'variety'),
             ParameterCol(self, 'feature'),
         ]
