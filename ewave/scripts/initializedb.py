@@ -16,6 +16,7 @@ from path import path
 from clld.scripts.util import initializedb, Data
 from clld.db.meta import DBSession
 from clld.db.models import common
+from clld.lib import excel
 
 import ewave
 from ewave import models
@@ -472,6 +473,7 @@ def main(args):
             common.Contributor, author['id'],
             id=str(author['id']), name="%(first_name)s %(last_name)s" % author)
 
+    abbr2lang = {}
     new_langs = []
     for vid, v in varieties.items():
         if vid not in data['Variety']:
@@ -508,6 +510,10 @@ def main(args):
                         common.Contributor, maxid, id=str(maxid), name=name)
                 DBSession.add(common.ContributionContributor(
                     contributor=contributor, contribution=contribution))
+        else:
+            l = data['Variety'][vid]
+        l.abbr = v['abbreviation'].strip()
+        abbr2lang[l.abbr] = l
 
     for author in read(args, 'o1_author'):
         for lang in filter(None, [l.strip() for l in author['langIDs'].split(',')]):
@@ -603,42 +609,65 @@ def main(args):
                 domainelement=de,
                 valueset=vs)
 
-    ex = {}
-    maxid = 0
-    for sentence in read(args, 'o2_sentence'):
-        if sentence['id'] > maxid:
-            maxid = sentence['id']
-        values = filter(None, [l.strip() for l in sentence['llpsdataIDs'].split(',')])
-        assert values
-        s = data.add(
-            common.Sentence, sentence['id'],
-            id=str(sentence['id']),
-            name=sentence['primary_text'],
-            language=data['Value'][int(values[0])].valueset.language,
-            comment=sentence['spec2'])
-        for value in values:
-            value = data['Value'][int(value)]
-            DBSession.add(common.ValueSentence(sentence=s, value=value))
-            ex[(int(value.valueset.language.id), int(value.valueset.parameter.id))] = 1
+    #ex = {}
+    #maxid = 0
+    #for sentence in read(args, 'o2_sentence'):
+    #    if sentence['id'] > maxid:
+    #        maxid = sentence['id']
+    #    values = filter(None, [l.strip() for l in sentence['llpsdataIDs'].split(',')])
+    #    assert values
+    #    s = data.add(
+    #        common.Sentence, sentence['id'],
+    #        id=str(sentence['id']),
+    #        name=sentence['primary_text'],
+    #        language=data['Value'][int(values[0])].valueset.language,
+    #        comment=sentence['spec2'])
+    #    for value in values:
+    #        value = data['Value'][int(value)]
+    #        DBSession.add(common.ValueSentence(sentence=s, value=value))
+    #        ex[(int(value.valueset.language.id), int(value.valueset.parameter.id))] = 1
 
-    for lid in range(100):
-        for fid, example, gloss, translation in examples(args, lid):
-            if (lid, fid) in ex:
-                continue
-            maxid += 1
-            s = data.add(
-                common.Sentence, maxid,
-                id=str(maxid),
-                name=example,
-                analyzed=example if gloss else None,
-                gloss=gloss,
-                description=translation,
-                language=data['Variety'][lid])
-            vs = DBSession.query(common.ValueSet)\
-                .join(common.Parameter).join(common.Language)\
-                .filter(common.Parameter.id == str(fid))\
-                .filter(common.Language.id == str(lid)).one()
-            DBSession.add(common.ValueSentence(sentence=s, value=vs.values[0]))
+    #for lid in range(100):
+    #    for fid, example, gloss, translation in examples(args, lid):
+    #        if (lid, fid) in ex:
+    #            continue
+    #        maxid += 1
+    #        s = data.add(
+    #            common.Sentence, maxid,
+    #            id=str(maxid),
+    #            name=example,
+    #            analyzed=example if gloss else None,
+    #            gloss=gloss,
+    #            description=translation,
+    #            language=data['Variety'][lid])
+    #        vs = DBSession.query(common.ValueSet)\
+    #            .join(common.Parameter).join(common.Language)\
+    #            .filter(common.Parameter.id == str(fid))\
+    #            .filter(common.Language.id == str(lid)).one()
+    #        DBSession.add(common.ValueSentence(sentence=s, value=vs.values[0]))
+
+    DBSession.flush()
+
+    for i, example in enumerate(excel.rows(xlrd.open_workbook(args.data_file('eWAVE2-Examples_raw.xlsx')).sheets()[0], as_dict=True)):
+        lang = abbr2lang[example['language']]
+        if isinstance(example['feature number'], basestring):
+            fid = re.match('([0-9]+)', example['feature number']).groups()[0]
+        else:
+            fid = example['feature number']
+        fid = str(int(fid))
+        s = data.add(
+            common.Sentence, i+1,
+            id=str(i+1),
+            name=example['primary_text'],
+            gloss=example['gloss'] or None,
+            comment=example['comment'] or None,
+            description=example['translation'] or None,
+            language=lang)
+        vs = DBSession.query(common.ValueSet)\
+            .join(common.Parameter).join(common.Language)\
+            .filter(common.Parameter.id == fid)\
+            .filter(common.Language.pk == lang.pk).one()
+        DBSession.add(common.ValueSentence(sentence=s, value=vs.values[0]))
 
 
 def prime_cache(args):

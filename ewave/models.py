@@ -41,6 +41,7 @@ class Variety(Language, CustomModelMixin):
     pk = Column(Integer, ForeignKey('language.pk'), primary_key=True)
     region_pk = Column(Integer, ForeignKey('region.pk'))
     type_pk = Column(Integer, ForeignKey('varietytype.pk'))
+    abbr = Column(String)
 
     region = relationship(Region, backref='varieties')
     type = relationship(VarietyType, backref='varieties')

@@ -23,11 +23,27 @@ def choices(col, order=None):
     return list((o.pk, o.name) for o in DBSession.query(col).order_by(order))
 
 
+class AltTypeCol(Col):
+    def __init__(self, dt, name, **kw):
+        kw['choices'] = choices(VarietyType)
+        kw['sTitle'] = 'Variety Type'
+        super(AltTypeCol, self).__init__(dt, name, **kw)
+
+    def format(self, item):
+        return map_marker_img(self.dt.req, item.language) + item.language.type.name
+
+    def search(self, qs):
+        return Variety.type_pk == int(qs)
+
+    def order(self):
+        return Variety.type_pk
+
+
 class Sentences(BaseSentences):
     def col_defs(self):
         return filter(
             lambda col: col.name not in ['type', 'd', 'analyzed', 'gloss', 'description'],
-            super(Sentences, self).col_defs())
+            super(Sentences, self).col_defs()) + [AltTypeCol(self, 'type')]
 
 
 #
