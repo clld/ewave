@@ -73,7 +73,7 @@ class RegionCol(Col):
 class TypeCol(Col):
     def __init__(self, dt, name, **kw):
         kw['choices'] = choices(VarietyType)
-        kw['sTitle'] = 'Variety Type'
+        kw['sTitle'] = 'Type'
         super(TypeCol, self).__init__(dt, name, **kw)
 
     def format(self, item):

@@ -7,7 +7,7 @@ from clld import interfaces
 
 # we must make sure custom models are known at database initialization!
 from ewave import models
-from ewave.maps import LanguageMap
+from ewave.maps import LanguageMap, FeatureMap
 from ewave.datatables import WaveContributions, Features, Values, Sentences
 from ewave.adapters import GeoJsonContributions
 
@@ -126,6 +126,7 @@ def main(global_config, **settings):
     )
 
     config.register_map('contribution', LanguageMap)
+    config.register_map('parameter', FeatureMap)
     config.register_map('contributions', Map)
 
     config.register_adapter(

@@ -46,6 +46,11 @@ class Variety(Language, CustomModelMixin):
     region = relationship(Region, backref='varieties')
     type = relationship(VarietyType, backref='varieties')
 
+    def __json__(self, req):
+        res = super(Variety, self).__json__(req)
+        res['type'] = {'name': self.type.name, 'pk': self.type.pk}
+        return res
+
 
 @implementer(interfaces.IContribution)
 class WaveContribution(Contribution, CustomModelMixin):
