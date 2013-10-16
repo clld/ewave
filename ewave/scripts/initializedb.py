@@ -13,10 +13,12 @@ from sqlalchemy.orm import joinedload_all
 import xlrd
 from bs4 import BeautifulSoup as bs
 from path import path
-from clld.scripts.util import initializedb, Data
+from clld.scripts.util import initializedb, Data, bibtex2source
 from clld.db.meta import DBSession
 from clld.db.models import common
 from clld.lib import excel
+from clld.lib import bibtex
+from clld.util import slug
 
 import ewave
 from ewave import models
@@ -54,280 +56,6 @@ def read(args, table):
 
     for row in csv.reader(file(args.data_file('%s.txt' % table)), delimiter=str('\t')):
         yield dict((schema[i][0], schema[i][1](v)) for i, v in enumerate(row))
-
-"""
-refs = {
-    (
-        'Aceto, Michael',
-        '2008',
-        "Eastern Caribbean English-derived language varieties: morphology and syntax.",
-        "In: Edgar W. Schneider, ed. Varieties of English. Vol.2: The Americas and the Caribbean. Berlin/New York: Mouton de Gruyter, pp. 645-660"),
-    (
-        'Alo, M.A. and Rajend Mesthrie',
-        '2008',
-        "Nigerian Pidgin English: morphology and syntax.",
-        "In: Rajend Mesthrie, ed. Varieties of English. Vol. 4: Africa, South and Southeast Asia. Berlin/New York: Mouton de Gruyter, pp. 323-339"),
-    #(
-    #    'APiCS questionnaire. "Questionnaire" and feature pages on the website of the Atlas of Pidgin and Creole Language Structures, ed. by Susanne Michaelis, Philippe Maurer, Magnus Huber, Martin Haspelmath. http://lingweb.eva.mpg.de/apics/index.php/APiCS_Questionnaire.  Viewed 14th January 2009."),
-    (
-        'Baskaran, Loga',
-        '2008',
-        "Malaysian English: morphology and syntax.",
-        "In: Rajend Mesthrie, ed. Varieties of English. Vol. 4: Africa, South and Southeast Asia. Berlin/New York: Mouton de Gruyter, pp. 610-623"),
-    (
-        'Beal, Joan',
-        '2008',
-        "English dialects in the North of England: morphology and syntax.",
-        "In: Bernd Kortmann and Clive Upton, eds. Varieties of English. Vol. 1: The British Isles. Berlin/New York: Mouton de Gruyter, pp. 373-403"),
-    (
-        'Bhatt, Rakesh M',
-        '2008',
-        "Indian English: morphology and syntax.",
-        "In: Rajend Mesthrie, ed. Varieties of English. Vol. 4: Africa, South and Southeast Asia. Berlin/New York: Mouton de Gruyter, pp. 546-562"),
-    (
-        'Bowerman, Sean', '2008',
-        "White South African English: morphology and syntax.",
-        "In: Rajend Mesthrie, ed. Varieties of English. Vol. 4: Africa, South and Southeast Asia. Berlin/New York: Mouton de Gruyter, pp. 472-487"),
-    (
-        'Burridge, Kate',
-        '2008',
-        "Synopsis: morphological and syntactic variation in the Pacific and Australasia.",
-        "In: Kate Burridge and Bernd Kortmann, eds. Varieties of English. Vol. 3: The Pacific and Australasia. Berlin/New York: Mouton de Gruyter, pp. 583-600"),
-    (
-        'Clarke, Sandra',
-        '2008',
-        "Newfoundland English: morphology and syntax.",
-        "In: Edgar W. Schneider, ed. Varieties of English. Vol.2: The Americas and the Caribbean. Berlin/New York: Mouton de Gruyter, pp. 492-509"),
-    (
-        'Crowley, Terry',
-        '2008',
-        "Bislama: morphology and syntax.",
-        "In: Kate Burridge and Bernd Kortmann, eds. Varieties of English. Vol. 3: The Pacific and Australasia. Berlin/New York: Mouton de Gruyter, pp.444-466"),
-    (
-        'Escure, Geneviève',
-        '2008',
-        "Belize and other central American varieties: morphology and syntax.",
-        "In: Edgar W. Schneider, ed. Varieties of English. Vol.2: The Americas and the Caribbean. Berlin/New York: Mouton de Gruyter, pp. 732-762"),
-    (
-        'Faraclas, Nicholas',
-        '2008',
-        "Nigerian Pidgin English: morphology and syntax.",
-        "In: Rajend Mesthrie, ed. Varieties of English. Vol. 4: Africa, South and Southeast Asia. Berlin/New York: Mouton de Gruyter, pp. 340-367"),
-    (
-        'Filppula, Markku',
-        '2008',
-        "Irish English: morphology and syntax.",
-        "In: Bernd Kortmann and Clive Upton, eds. Varieties of English. Vol. 1: The British Isles. Berlin/New York: Mouton de Gruyter, pp. 328-359"),
-    (
-        'Hickey, Raymond',
-        '2004',
-        "Appendix 1: Checklist of nonstandard features",
-        "In: Raymond Hickey, ed. Legacies of Colonial English. Studies in transported dialects. Cambridge: CUP, pp. 586-620"),
-    (
-        'Huber, Magnus and Kari Dako',
-        '2008',
-        "Ghanaian English: morphology and syntax.",
-        "In: Rajend Mesthrie, ed. Varieties of English. Vol. 4: Africa, South and Southeast Asia. Berlin/New York: Mouton de Gruyter, pp. 368-380"),
-    (
-        'Huber, Magnus',
-        '2008',
-        "Ghanaian Pidgin English: morphology and syntax.",
-        "In: Rajend Mesthrie, ed. Varieties of English. Vol. 4: Africa, South and Southeast Asia. Berlin/New York: Mouton de Gruyter, pp. 381-394"),
-    (
-        'Huttar, Mary L',
-        '2007',
-        "Ndyuka (Creole English)",
-        "In: Peter L. Patrick and John Holm, eds. Comparative creole syntax. Parallel Outlines of 18 Creole Grammars. UK/Sri Lanka: Battlebridge, pp. 217-236"),
-    (
-        'James, Winford and Valerie Youssef',
-        '2008',
-        "The creoles of Trinidad and Tobago: morphology and syntax.",
-        "In: Edgar W. Schneider, ed. Varieties of English. Vol.2: The Americas and the Caribbean. Berlin/New York: Mouton de Gruyter, pp. 661-692"),
-    (
-        'Jourdan, Christine',
-        '2008',
-        "Solomon Islands Pijin: morphology and syntax.",
-        "In: Kate Burridge and Bernd Kortmann, eds. Varieties of English. Vol. 3: The Pacific and Australasia. Berlin/New York: Mouton de Gruyter, pp. 467-487"),
-    (
-        'Kautzsch, Alexander',
-        '2008',
-        "Earlier African American Vernacular English: morphology and syntax.",
-        "In: Edgar W. Schneider, ed. Varieties of English. Vol.2: The Americas and the Caribbean. Berlin/New York: Mouton de Gruyter, pp. 534-550"),
-    (
-        'Kortmann, Bernd and Benedikt Szmrecsanyi',
-        '2004',
-        "Global synopsis: morphological and syntactic variation in English",
-        "In: Bernd Kortmann, Edgar W. Schneider, Kate Burridge, Rajend Mesthrie, and Clive Upton, eds. A Handbook of Varieties of English. Vol. 2 Morphology and Syntax. Berlin/New York: Mouton de Gruyter."),
-    (
-        'Kortmann, Bernd',
-        '2005',
-        "English linguistics: essentials. Berlin: Cornelsen"),
-    (
-        'Kortmann, Bernd',
-        '2008',
-        "Synopsis: morphological and syntactic variation in the British Isles.",
-        "In: Bernd Kortmann and Clive Upton, eds. Varieties of English. Vol. 1: The British Isles. Berlin/New York: Mouton de Gruyter, pp.478-495"),
-    (
-        'Malcolm, Ian G',
-        '2008',
-        "Australian Creoles and Aboriginal English: morphology and syntax.",
-        "In: Kate Burridge and Bernd Kortmann, eds. Varieties of English. Vol. 3: The Pacific and Australasia. Berlin/New York: Mouton de Gruyter, pp. 415-443"),
-    (
-        'McCormick, Kay',
-        '2008',
-        "Cape Flats English: morphology and syntax.",
-        "In: Rajend Mesthrie, ed. Varieties of English. Vol. 4: Africa, South and Southeast Asia. Berlin/New York: Mouton de Gruyter, pp. 521-534"),
-    (
-        'Melchers, Gunnel',
-        '2008',
-        "English spoken in Orkney and Shetland: morphology and syntax.",
-        "In: Bernd Kortmann and Clive Upton, eds. Varieties of English. Vol. 1: The British Isles. Berlin/New York: Mouton de Gruyter, pp.285-298"),
-    (
-        'Mesthrie, Rajend and Rakesh M. Bhatt',
-        '2008',
-        "World Englishes: The study of new linguistic varieties. Cambridge: Cambridge University Press"),
-    (
-        'Mesthrie, Rajend',
-        '2008a',
-        "Black South African English: morphology and syntax.",
-        "In: Rajend Mesthrie, ed. Varieties of English. Vol. 4: Africa, South and Southeast Asia. Berlin/New York: Mouton de Gruyter, pp. 488-500"),
-    (
-        'Mesthrie, Rajend',
-        '2008b',
-        "Indian South African English: morphology and syntax.",
-        "In: Rajend Mesthrie, ed. Varieties of English. Vol. 4: Africa, South and Southeast Asia. Berlin/New York: Mouton de Gruyter, pp. 501-520"),
-    (
-        'Mesthrie, Rajend',
-        '2008c',
-        "Synopsis: morphological and syntactic variation in Africa and South and Southeast Asia.",
-        "In: Rajend Mesthrie, ed. Varieties of English. Vol. 4: Africa, South and Southeast Asia. Berlin/New York: Mouton de Gruyter, pp. 624-635"),
-    (
-        'Miller, Jim',
-        '2008',
-        "Scottish English: morphology and syntax.",
-        "In: Bernd Kortmann and Clive Upton, eds. Varieties of English. Vol. 1: The British Isles. Berlin/New York: Mouton de Gruyter, pp.299- 327"),
-    (
-        'Montgomery, Michael B',
-        '2008',
-        "Appalachian English: morphology and syntax.",
-        "In: Edgar W. Schneider, ed. Varieties of English. Vol.2: The Americas and the Caribbean. Berlin/New York: Mouton de Gruyter, pp. 428-467"),
-    (
-        'Mufwene, Salikoko S',
-        '2008',
-        "Gullah: morphology and syntax.",
-        "In: Edgar W. Schneider, ed. Varieties of English. Vol.2: The Americas and the Caribbean. Berlin/New York: Mouton de Gruyter, pp. 551-571"),
-    (
-        'Mugler, France and Jan Tent',
-        '2008',
-        "Fiji English: morphology and syntax.",
-        "In: Kate Burridge and Bernd Kortmann, eds. Varieties of English. Vol. 3: The Pacific and Australasia. Berlin/New York: Mouton de Gruyter, pp. 546-567"),
-    (
-        'Mühlhäusler, Peter',
-        '2008',
-        "Norfolk Island-Pitcairn English (Norfuk and Pitkern): morphology and syntax.",
-        "In: Kate Burridge and Bernd Kortmann, eds. Varieties of English. Vol. 3: The Pacific and Australasia. Berlin/New York: Mouton de Gruyter, pp.568-582"),
-    (
-        'Murray, Thomas E. and Beth Lee Simon',
-        '2008',
-        "Colloquial American English: morphology and syntax.",
-        "In: Edgar W. Schneider, ed. Varieties of English. Vol.2: The Americas and the Caribbean. Berlin/New York: Mouton de Gruyter, pp. 401-427"),
-    (
-        'Patrick, Peter L',
-        '2007',
-        "Jamaican Patwa (Creole English)",
-        "In: Peter L. Patrick and John Holm, eds. Comparative creole syntax. Parallel Outlines of 18 Creole Grammars. UK/Sri Lanka: Battlebridge, pp. 127-152"),
-    (
-        'Patrick, Peter L',
-        '2008',
-        "Jamaican Creole: morphology and syntax.",
-        "In: Edgar W. Schneider, ed. Varieties of English. Vol.2: The Americas and the Caribbean. Berlin/New York: Mouton de Gruyter, pp. 607-644"),
-    (
-        'Peter, Lothar and Hans-Georg Wolf',
-        '2007',
-        "A comparison of the varieties of West African Pidgin English",
-        "In: World Englishes 26(1):3-21"),
-    (
-        'Sakoda, Kent and Jeff Siegel',
-        '2008',
-        "Hawai'i Creole: morphology and syntax.",
-        "In: Kate Burridge and Bernd Kortmann, eds. Varieties of English. Vol. 3: The Pacific and Australasia. Berlin/New York: Mouton de Gruyter, pp. 514-545"),
-    (
-        'Schmied, Josef',
-        '2008',
-        "East African English (Kenya, Uganda, Tanzania): morphology and syntax.",
-        "In: Rajend Mesthrie, ed. Varieties of English. Vol. 4: Africa, South and Southeast Asia. Berlin/New York: Mouton de Gruyter, pp. 451-471"),
-    (
-        'Schneider, Edgar W',
-        '2007',
-        "Postcolonial English. Varieties around the world. Cambridge: Cambridge University Press"),
-    (
-        'Schneider, Edgar W',
-        '2008',
-        "Synopsis: morphological and syntactic variation in the Americas and the Caribbean.",
-        "In: Edgar W. Schneider, ed. Varieties of English. Vol.2: The Americas and the Caribbean. Berlin/New York: Mouton de Gruyter, pp. 763-776"),
-    (
-        'Sharma, Devyani',
-        '2005',
-        "Language transfer and discourse universals in Indian English article use.",
-        "Studies in Second Language Acquisition 27: 535-566"),
-    (
-        'Singler, John V',
-        '2008',
-        "Liberian Settler English: morphology and syntax.",
-        "In: Rajend Mesthrie, ed. Varieties of English. Vol. 4: Africa, South and Southeast Asia. Berlin/New York: Mouton de Gruyter, pp. 395-415"),
-    (
-        'Smith, Geoff',
-        '2008',
-        "Tok Pisin: morphology and syntax.",
-        "In: Kate Burridge and Bernd Kortmann, eds. Varieties of English. Vol. 3: The Pacific and Australasia. Berlin/New York: Mouton de Gruyter, pp.488-513"),
-    (
-        'Trudgill, Peter and J. J. Chambers, eds',
-        '1991',
-        'Dialects of English: studies in grammatical variation. London: Longman.'),
-    (
-        'Trudgill, Peter',
-        '2008',
-        "The dialect of East Anglia: morphology and syntax.",
-        "In: Bernd Kortmann and Clive Upton, eds. Varieties of English. Vol.1: The British Isles. Berlin/New York: Mouton de Gruyter, pp. 404-416"),
-    (
-        'Upton, Clive, David Parry and J. D. A. Widdowson',
-        '1994',
-        "Survey of English dialects: the dictionary and grammar. London: Routledge."
-    (
-        'Wagner, Susanne',
-        '2008',
-        "Dialects in the Southwest of England: morphology and syntax.",
-        "In: Bernd Kortmann and Clive Upton, eds. Varieties of English. Vol. 1: The British Isles. Berlin/New York: Mouton de Gruyter, pp.417-439"),
-    (
-        'Wee, Lionel.',
-        "Singapore English: morphology and syntax.",
-        "In: Rajend Mesthrie, ed. Varieties of English. Vol. 4: Africa, South and Southeast Asia. Berlin/New York: Mouton de Gruyter, pp. 593-609"),
-    (
-        'Wilson, Sheila and Rajend Mesthrie',
-        '2008',
-        "St. Helena English: morphology and syntax.",
-        "In: Rajend Mesthrie, ed. Varieties of English. Vol. 4: Africa, South and Southeast Asia. Berlin/New York: Mouton de Gruyter, pp. 535-545"),
-    (
-        'Winford, Donald and Bettina Migge',
-        "Surinamese creoles: morphology and syntax.",
-        "In: Edgar W. Schneider, ed. Varieties of English. Vol.2: The Americas and the Caribbean. Berlin/New York: Mouton de Gruyter, pp. 693-731"),
-    (
-        'Wolfram, Walt',
-        '2008a',
-        "Rural and ethnic varieties in the Southeast: morphology and syntax.",
-        "In: Edgar W. Schneider, ed. Varieties of English. Vol.2: The Americas and the Caribbean. Berlin/New York: Mouton de Gruyter, pp. 468-491"),
-    (
-        'Wolfram, Walt',
-        '2008b',
-        "Urban African American Vernacular English: morphology and syntax.",
-        "In: Edgar W. Schneider, ed. Varieties of English. Vol.2: The Americas and the Caribbean. Berlin/New York: Mouton de Gruyter, pp. 510-533"),
-    (
-        'Yillah, Sorie M and Chris Corcoran',
-        '2007',
-        "Krio (Creole English)",
-        "In: Peter L. Patrick and John Holm, eds. Comparative Creole Syntax. Parallel Outlines of 18 Creole Grammars. UK/Sri Lanka: Battlebridge, pp. 175-198"),
-}
-"""
 
 
 def examples(args, id_):
@@ -609,46 +337,12 @@ def main(args):
                 domainelement=de,
                 valueset=vs)
 
-    #ex = {}
-    #maxid = 0
-    #for sentence in read(args, 'o2_sentence'):
-    #    if sentence['id'] > maxid:
-    #        maxid = sentence['id']
-    #    values = filter(None, [l.strip() for l in sentence['llpsdataIDs'].split(',')])
-    #    assert values
-    #    s = data.add(
-    #        common.Sentence, sentence['id'],
-    #        id=str(sentence['id']),
-    #        name=sentence['primary_text'],
-    #        language=data['Value'][int(values[0])].valueset.language,
-    #        comment=sentence['spec2'])
-    #    for value in values:
-    #        value = data['Value'][int(value)]
-    #        DBSession.add(common.ValueSentence(sentence=s, value=value))
-    #        ex[(int(value.valueset.language.id), int(value.valueset.parameter.id))] = 1
-
-    #for lid in range(100):
-    #    for fid, example, gloss, translation in examples(args, lid):
-    #        if (lid, fid) in ex:
-    #            continue
-    #        maxid += 1
-    #        s = data.add(
-    #            common.Sentence, maxid,
-    #            id=str(maxid),
-    #            name=example,
-    #            analyzed=example if gloss else None,
-    #            gloss=gloss,
-    #            description=translation,
-    #            language=data['Variety'][lid])
-    #        vs = DBSession.query(common.ValueSet)\
-    #            .join(common.Parameter).join(common.Language)\
-    #            .filter(common.Parameter.id == str(fid))\
-    #            .filter(common.Language.id == str(lid)).one()
-    #        DBSession.add(common.ValueSentence(sentence=s, value=vs.values[0]))
-
     DBSession.flush()
 
-    for i, example in enumerate(excel.rows(xlrd.open_workbook(args.data_file('eWAVE2-Examples_raw.xlsx')).sheets()[0], as_dict=True)):
+    for rec in bibtex.Database.from_file(args.data_file('eWAVE2References_tidy-1.bib')):
+        data.add(common.Source, slug(rec.id), _obj=bibtex2source(rec))
+
+    for i, example in enumerate(excel.rows(xlrd.open_workbook(args.data_file('eWAVE2-Examples_tidy-1.xlsx')).sheets()[0], as_dict=True)):
         lang = abbr2lang[example['language']]
         if isinstance(example['feature number'], basestring):
             fid = re.match('([0-9]+)', example['feature number']).groups()[0]
@@ -663,6 +357,26 @@ def main(args):
             comment=example['comment'] or None,
             description=example['translation'] or None,
             language=lang)
+
+        for ref in (example['Source'] or '').split(';'):
+            if ref:
+                ref = ref.strip()
+                desc = None
+                if ':' in ref:
+                    ref, desc = [_s.strip() for _s in ref.split(':', 1)]
+                recid = slug(ref)
+                recid = {
+                    'allsopp996': 'allsopp1996',
+                    'orton1962': 'orton19621971',
+                    'bbcvoices': 'voices',
+                    'cottmann1963': 'cottman1963',
+                    'mooreetal1991': 'moore1991',
+                }.get(recid, recid)
+                if recid not in data['Source']:
+                    assert recid == '50'
+                DBSession.add(common.SentenceReference(
+                    sentence=s, source=data['Source'][recid], description=desc, key=ref))
+
         vs = DBSession.query(common.ValueSet)\
             .join(common.Parameter).join(common.Language)\
             .filter(common.Parameter.id == fid)\

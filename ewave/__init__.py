@@ -111,18 +111,24 @@ def link_attrs(req, obj, **kw):
 def main(global_config, **settings):
     """ This function returns a Pyramid WSGI application.
     """
+    settings['route_patterns'] = {
+        'contributors': '/authors',
+        'contributor': '/authors/{id:[^/\.]+}',
+    }
     settings['sitemaps'] = 'contribution parameter sentence valueset'.split()
     utilities = [
         (WaveMapMarker(), interfaces.IMapMarker),
         (link_attrs, interfaces.ILinkAttrs),
     ]
     config = get_configurator('ewave', *utilities, settings=settings)
+    config.add_route('changes', '/changes')
     config.register_menu(
         ('dataset', partial(menu_item, 'dataset', label='Home')),
         ('contributions', partial(menu_item, 'contributions')),
         ('parameters', partial(menu_item, 'parameters')),
         ('contributors', partial(menu_item, 'contributors')),
         ('sentences', partial(menu_item, 'sentences')),
+        ('sources', partial(menu_item, 'sources')),
     )
 
     config.register_map('contribution', LanguageMap)

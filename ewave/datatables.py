@@ -165,7 +165,7 @@ class _RegionCol(RegionCol):
 
 class _TypeCol(TypeCol):
     def format(self, item):
-        return map_marker_img(self.dt.req, item.valueset.language) + item.valueset.language.type.name
+        return item.valueset.language.type.name
 
     def search(self, qs):
         return Variety.type_pk == int(qs)
