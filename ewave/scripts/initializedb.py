@@ -91,11 +91,6 @@ def main(args):
             return None
 
     xls = xlrd.open_workbook(args.data_file('ewave.xls'))
-    #var-infrmnts-type-regn-lat-lon
-    #colour code matrix
-    #RatingSystem&abbreviations
-    #Feature Groups
-    #Example sources
     varieties = {}
     values = {}
     matrix = xls.sheet_by_name('matrixRAW-quer')
@@ -196,13 +191,45 @@ def main(args):
             description=lang['spec1'],
             variety=l)
 
+    urls = {
+        'Kautzsch': 'http://www.uni-regensburg.de/language-literature-culture/english-linguistics/staff/kautzsch/index.html',
+        'Wagner': 'http://www.english.ox.ac.uk/about-faculty/faculty-members/permanent-post-holders/wagner-pd-dr-susanne',
+    }
     for author in read(args, 'o1_author'):
         data.add(
             common.Contributor, author['id'],
-            id=str(author['id']), name="%(first_name)s %(last_name)s" % author)
+            id=str(author['id']),
+            name="%(first_name)s %(last_name)s" % author,
+            address=author['address'],
+            email=author['email'],
+            url=urls.get(author['last_name'], author['website']))
 
     abbr2lang = {}
     new_langs = []
+    desc = {
+        75: "Philippine English is one of the very few American-transplanted Englishes. "
+        "The language was introduced in the country by American colonization that "
+        "started in 1898. From only 300,000 users or 4% of the population at the "
+        "beginning of the 20th century, it is estimated that there were around 42 "
+        "million or 70% of the population who are able to use English, almost fifty "
+        "years after the American colonization ended at the end of the century "
+        "(Gonzalez, 1996). In the implementing 1987 Constitution, English is regarded as "
+        "one of the two official languages of the Philippines, the other one being the "
+        "national language Filipino. It also interacts with 180 other Austronesian-type "
+        "languages used in the country, nine of them considered major languages. English "
+        "plays a major role in the Philippine society, offering a rightfully unique "
+        "rendering of the psycho-sociolinguistic phenomenon of the spread of English: "
+        "A sizeable number of Filipinos even learn it as a first language (and sometimes "
+        "only language). The language is widely used in government, education, business, "
+        "science and technology, and the arts but it has also penetrated the personal "
+        "and private lives of Filipinos, where code-switching can be prevalent. "
+        "Proficiency in English may also be equated with socio-economic status; those "
+        "with higher socio-economic status tend to be more proficient in the language. "
+        "Philippine English is presently entering a stage of structural "
+        "systematicization (cf. Borlongan & Lim, 2012) and is being codified through "
+        "dictionaries and grammars. Consequently, some claims are made that Philippine "
+        "English is already at the phase of endonormative stabilization (Borlongan, 2011)."
+    }
     for vid, v in varieties.items():
         if vid not in data['Variety']:
             new_langs.append(vid)
@@ -218,7 +245,7 @@ def main(args):
                 models.WaveContribution, vid,
                 id=str(vid),
                 name=l.name,
-                description='TODO',
+                description=desc.get(vid, ''),
                 variety=l)
             if v['contributor(s)'] == 'Rajend Mesthrie':
                 v['contributor(s)'] = 'Rajend Mesthrie and Tracey Toefy and Sean Bowerman'
@@ -343,6 +370,8 @@ def main(args):
         data.add(common.Source, slug(rec.id), _obj=bibtex2source(rec))
 
     for i, example in enumerate(excel.rows(xlrd.open_workbook(args.data_file('eWAVE2-Examples_tidy-1.xlsx')).sheets()[0], as_dict=True)):
+        if example['primary_text'] == 'Cf. Table 1 in section 3.1':
+            continue
         lang = abbr2lang[example['language']]
         if isinstance(example['feature number'], basestring):
             fid = re.match('([0-9]+)', example['feature number']).groups()[0]
@@ -374,6 +403,7 @@ def main(args):
                 }.get(recid, recid)
                 if recid not in data['Source']:
                     assert recid == '50'
+                    continue
                 DBSession.add(common.SentenceReference(
                     sentence=s, source=data['Source'][recid], description=desc, key=ref))
 

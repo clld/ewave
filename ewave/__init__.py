@@ -93,7 +93,7 @@ class WaveMapMarker(MapMarker):
         if icon:
             return req.registry.getUtility(interfaces.IIcon, icon).url(req)
 
-        return super(WaveMapMarker, self).__call__(ctx, req)
+        return super(WaveMapMarker, self).__call__(ctx, req)  # pragma: no cover
 
 
 def link_attrs(req, obj, **kw):
@@ -114,6 +114,10 @@ def main(global_config, **settings):
     settings['route_patterns'] = {
         'contributors': '/authors',
         'contributor': '/authors/{id:[^/\.]+}',
+        'contributions': '/languages',
+        'contribution': '/languages/{id:[^/\.]+}',
+        'languages': '/varieties',
+        'language': '/varieties/{id:[^/\.]+}',
     }
     settings['sitemaps'] = 'contribution parameter sentence valueset'.split()
     utilities = [
@@ -121,7 +125,6 @@ def main(global_config, **settings):
         (link_attrs, interfaces.ILinkAttrs),
     ]
     config = get_configurator('ewave', *utilities, settings=settings)
-    config.add_route('changes', '/changes')
     config.register_menu(
         ('dataset', partial(menu_item, 'dataset', label='Home')),
         ('contributions', partial(menu_item, 'contributions')),

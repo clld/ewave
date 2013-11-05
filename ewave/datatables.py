@@ -1,16 +1,10 @@
 from sqlalchemy.orm import aliased, joinedload
-from sqlalchemy.sql.expression import cast
-from sqlalchemy.types import Integer
 
-from clld.db.util import get_distinct_values
 from clld.db.models import common
 from clld.db.meta import DBSession
 from clld.web import datatables
-from clld.web.datatables.base import (
-    Col, LinkCol, filter_number, IdCol, LinkToMapCol, PercentCol,
-)
-from clld.web.datatables.value import ValueNameCol, ValueLanguageCol, ParameterCol
-from clld.web.datatables.value import _LinkToMapCol as ValueLinkToMapCol
+from clld.web.datatables.base import Col, LinkCol, LinkToMapCol, PercentCol, IntegerIdCol
+from clld.web.datatables.value import ValueNameCol
 from clld.web.datatables.contribution import ContributorsCol, CitationCol
 from clld.web.datatables.sentence import Sentences as BaseSentences
 from clld.web.util.helpers import map_marker_img
@@ -49,11 +43,6 @@ class Sentences(BaseSentences):
 #
 # contributions:
 #
-class _LinkToMapCol(LinkToMapCol):
-    def get_obj(self, item):
-        return item.variety
-
-
 class RegionCol(Col):
     def __init__(self, dt, name, **kw):
         kw['choices'] = choices(Region)
@@ -104,7 +93,7 @@ class WaveContributions(datatables.Contributions):
             ContributorsCol(self, 'contributors', bSearchable=False, bSortable=False),
             TypeCol(self, 'type'),
             RegionCol(self, 'region'),
-            _LinkToMapCol(self, 'm'),
+            LinkToMapCol(self, 'm', get_object=lambda i: i.variety),
             CitationCol(self, 'cite', bSearchable=False, bSortable=False),
         ]
 
@@ -112,20 +101,6 @@ class WaveContributions(datatables.Contributions):
 #
 # features:
 #
-class FeatureNumberCol(IdCol):
-    def __init__(self, dt, name='id', **kw):
-        kw.setdefault('input_size', 'mini')
-        kw.setdefault('sClass', 'right')
-        kw.setdefault('sTitle', 'No.')
-        super(FeatureNumberCol, self).__init__(dt, name, **kw)
-
-    def search(self, qs):
-        return filter_number(cast(self.dt.model.id, Integer), qs, type_=int)
-
-    def order(self):
-        return cast(self.dt.model.id, Integer)
-
-
 class CategoryCol(Col):
     def __init__(self, dt, name, **kw):
         kw['choices'] = choices(FeatureCategory)
@@ -147,7 +122,7 @@ class Features(datatables.Parameters):
 
     def col_defs(self):
         return [
-            FeatureNumberCol(self),
+            IntegerIdCol(self, 'no'),
             LinkCol(self, 'name', sTitle='Feature name'),
             PercentCol(self, 'attestation', model_col=Feature.attestation),
             PercentCol(self, 'pervasiveness', model_col=Feature.pervasiveness),
@@ -210,20 +185,20 @@ class Values(datatables.Values):
     def col_defs(self):
         if self.parameter:
             return [
-                ValueLanguageCol(self, 'variety'),
+                LinkCol(self, 'variety',
+                        model_col=common.Language.name,
+                        get_obj=lambda i: i.valueset.language),
                 _RegionCol(self, 'region'),
                 _TypeCol(self, 'type'),
                 _ValueNameCol(self, 'name'),
-                ValueLinkToMapCol(self, 'm'),
+                LinkToMapCol(self, 'm', get_obj=lambda i: i.valueset.language),
             ]
         if self.language:
             return [
-                ParameterCol(self, 'feature'),
+                LinkCol(self, 'feature',
+                        model_col=common.Parameter.name,
+                        get_obj=lambda i: i.valueset.parameter),
                 _ValueNameCol(self, 'name'),
                 # TODO: feature category
             ]
-        return [
-            _ValueNameCol(self, 'name'),
-            ValueLanguageCol(self, 'variety'),
-            ParameterCol(self, 'feature'),
-        ]
+        return [_ValueNameCol(self, 'name')]
