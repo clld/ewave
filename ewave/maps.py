@@ -1,5 +1,5 @@
 from clld.web.maps import LanguageMap as BaseLanguageMap
-from clld.web.maps import Legend, ParameterMap
+from clld.web.maps import Legend, ParameterMap, Map
 from clld.web.util.helpers import JS
 from clld.web.util.htmllib import HTML
 from clld.db.meta import DBSession
@@ -14,48 +14,44 @@ class LanguageMap(BaseLanguageMap):
         super(LanguageMap, self).__init__(ctx.variety, req, eid=eid)
 
 
+def type_legend(map_):
+    def li(value, label, checked=False):
+        input_attrs = dict(
+            type='radio',
+            class_='stay-open vtype inline',
+            name='vtype',
+            value=value,
+            onclick=JS("EWAVE.toggle_languages")(map_.eid))
+        if checked:
+            input_attrs['checked'] = 'checked'
+        return HTML.label(
+            HTML.input(**input_attrs),
+            ' ',
+            label,
+            class_="stay-open",
+            style="margin-left:5px; margin-right:5px;",
+        )
+
+    items = [li('--any--', '--any--', checked=True)]
+    items.extend([li(vt.pk, vt.name) for vt in DBSession.query(VarietyType)])
+    return Legend(map_, 'Type', items, stay_open=True)
+
+
 class FeatureMap(ParameterMap):
     def get_legends(self):
         for legend in super(FeatureMap, self).get_legends():
             yield legend
+        yield type_legend(self)
 
-        def li(value, label, label_class, input_class, onclick, type_='checkbox', name='', checked=False):
-            input_attrs = dict(
-                type=type_,
-                class_=input_class + ' inline',
-                name=name,
-                value=value,
-                onclick=onclick)
-            if checked:
-                input_attrs['checked'] = 'checked'
-            return HTML.label(
-                HTML.input(**input_attrs),
-                ' ',
-                label,
-                class_="%s" % label_class,
-                style="margin-left:5px; margin-right:5px;",
-            )
 
-        def type_li(vt):
-            return li(
-                vt.pk,
-                vt.name,
-                'stay-open',
-                'stay-open vtype',
-                JS("EWAVE.toggle_languages")(self.eid),
-                type_='radio',
-                name='vtype')
+class VarietiesMap(Map):
+    def get_legends(self):
+        for legend in super(VarietiesMap, self).get_legends():
+            yield legend
+        yield type_legend(self)
 
-        items = [li(
-            '--any--',
-            '--any--',
-            'stay-open',
-            'stay-open vtype',
-            JS("EWAVE.toggle_languages")(self.eid),
-            type_="radio",
-            name='vtype',
-            checked=True)]
-        for vt in DBSession.query(VarietyType):
-            items.append(type_li(vt))
 
-        yield Legend(self, 'Type', items, stay_open=True)
+def includeme(config):
+    config.register_map('contribution', LanguageMap)
+    config.register_map('parameter', FeatureMap)
+    config.register_map('contributions', VarietiesMap)

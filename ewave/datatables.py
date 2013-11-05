@@ -77,7 +77,7 @@ class TypeCol(Col):
 
 class WaveContributions(datatables.Contributions):
     def __init__(self, *args, **kw):
-        super(WaveContributions, self).__init__(*args, **kw)
+        super(WaveContributions, self).__init__(*args, eid='Values', **kw)
         self.aliased_variety = aliased(Variety)
 
     def base_query(self, query):
@@ -202,3 +202,10 @@ class Values(datatables.Values):
                 # TODO: feature category
             ]
         return [_ValueNameCol(self, 'name')]
+
+
+def includeme(config):
+    config.register_datatable('contributions', WaveContributions)
+    config.register_datatable('parameters', Features)
+    config.register_datatable('values', Values)
+    config.register_datatable('sentences', Sentences)

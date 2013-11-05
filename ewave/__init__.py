@@ -2,13 +2,10 @@ from functools import partial
 
 from clld.web.app import get_configurator, menu_item
 from clld.web.icon import MapMarker
-from clld.web.maps import Map
 from clld import interfaces
 
 # we must make sure custom models are known at database initialization!
 from ewave import models
-from ewave.maps import LanguageMap, FeatureMap
-from ewave.datatables import WaveContributions, Features, Values, Sentences
 from ewave.adapters import GeoJsonContributions
 
 """
@@ -134,18 +131,12 @@ def main(global_config, **settings):
         ('sources', partial(menu_item, 'sources')),
     )
 
-    config.register_map('contribution', LanguageMap)
-    config.register_map('parameter', FeatureMap)
-    config.register_map('contributions', Map)
-
     config.register_adapter(
         GeoJsonContributions,
         interfaces.IContribution,
         interfaces.IIndex,
         name=GeoJsonContributions.mimetype)
 
-    config.register_datatable('contributions', WaveContributions)
-    config.register_datatable('parameters', Features)
-    config.register_datatable('values', Values)
-    config.register_datatable('sentences', Sentences)
+    config.include('ewave.maps')
+    config.include('ewave.datatables')
     return config.make_wsgi_app()
