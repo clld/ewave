@@ -1,6 +1,7 @@
 <%inherit file="../${context.get('request').registry.settings.get('clld.app_template', 'app.mako')}"/>
 <%namespace name="util" file="../util.mako"/>
 <%! active_menu_item = "contributions" %>
+<%block name="title">Variety ${ctx.name}</%block>
 
 <h2>${ctx.name}</h2>
 ${h.coins(request, ctx)}
@@ -15,14 +16,6 @@ ${request.get_datatable('values', h.models.Value, language=ctx.variety).render()
     </%util:well>
     <%util:well>
         ${request.map.render()}
+        ${h.format_coordinates(ctx.variety)}
     </%util:well>
-    ##<%util:well title="Sources">
-    ##<dl>
-    ##    % for source in sorted(list(ctx.language.sources), key=lambda s: s.name):
-    ##    <dt style="clear: right;">${h.link(request, source)}</dt>
-    ##    <dd id="${h.format_gbs_identifier(source)}">${source.description}</dd>
-    ##    % endfor
-    ##</dl>
-    ##${util.gbs_links(filter(None, [s.gbs_identifier for s in ctx.language.sources]))}
-    ##</%util:well>
 </%def>

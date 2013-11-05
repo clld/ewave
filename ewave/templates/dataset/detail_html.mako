@@ -1,11 +1,6 @@
 <%inherit file="../home_comp.mako"/>
 <%namespace name="util" file="../util.mako"/>
 
-##<%def name="sidebar()">
-##    <div class="well">
-##    </div>
-##</%def>
-
 <h2>Welcome to eWAVE</h2>
 <p>
     by ${request.dataset.formatted_editors()} ${h.cite_button(request, ctx)}
