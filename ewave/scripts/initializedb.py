@@ -138,17 +138,18 @@ def main(args):
         ('3', 'Tense & Aspect', 'Verb phrase I: tense and aspect'),
         ('4', 'Modal Verbs', 'Verb phrase II: modal verbs'),
         ('5', 'Verb Morphology', 'Verb phrase III: verb morphology'),
-        ('6', 'Voice', 'Verb phrase IV: voice'),
-        ('7', 'Negation', 'Negation'),
-        ('8', 'Agreement', 'Agreement'),
-        ('9', 'Relativization', 'Relativization'),
-        ('10', 'Complementation', 'Complementation'),
-        ('11', 'Adverbial Subordination', 'Adverbial Subordination'),
-        ('12', 'Adverbs & Prepositions', 'Adverbs and prepositions'),
-        ('13', 'Discourse & Word Order', 'Discourse organization and word order'),
+        #('6', 'Voice', 'Verb phrase IV: voice'),
+        ('6', 'Negation', 'Negation'),
+        ('7', 'Agreement', 'Agreement'),
+        ('8', 'Relativization', 'Relativization'),
+        ('9', 'Complementation', 'Complementation'),
+        ('10', 'Adverbial Subordination', 'Adverbial Subordination'),
+        ('11', 'Adverbs & Prepositions', 'Adverbs and prepositions'),
+        ('12', 'Discourse & Word Order', 'Discourse organization and word order'),
     ]:
         data.add(
             models.FeatureCategory, name, id=id, name=name, description=description)
+    data['FeatureCategory']['Voice'] = data['FeatureCategory']['Verb Morphology']
 
     #for id, name, description in [
     #    ('L1t', 'Low-contact traditional L1 dialects', 'Traditional, regional non-standard mother-tongue varieties, e.g. East Anglian English and the dialects spoken in the Southwest, the Southeast and the North of England, as well as, in North America, Newfoundland English, Appalachian English and Ozark English.'),

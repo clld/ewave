@@ -66,6 +66,7 @@ _('Contributors')
 _('Contributor')
 _('Contributions')
 _('Contribution')
+_('Changes')
 
 
 class WaveMapMarker(MapMarker):

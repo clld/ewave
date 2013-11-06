@@ -122,7 +122,7 @@ class Features(datatables.Parameters):
 
     def col_defs(self):
         return [
-            IntegerIdCol(self, 'no'),
+            IntegerIdCol(self, 'id'),
             LinkCol(self, 'name', sTitle='Feature name'),
             PercentCol(self, 'attestation', model_col=Feature.attestation),
             PercentCol(self, 'pervasiveness', model_col=Feature.pervasiveness),
