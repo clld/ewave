@@ -130,7 +130,7 @@ def main(args):
         name='eWAVE',
         description='The Electronic World Atlas of Varieties of English',
         domain='ewave-atlas.org',
-        published=date(2011, 8, 15),
+        published=date(2013, 11, 15),
         license='http://creativecommons.org/licenses/by-sa/3.0/',
         contact='bernd.kortmann@anglistik.uni-freiburg.de',
         jsondata={

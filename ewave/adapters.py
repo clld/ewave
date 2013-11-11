@@ -26,13 +26,13 @@ class Matrix(CsvDump):
 
     def get_fields(self, req):  # pragma: no cover
         res = [f[0] for f in self.md_fields]
-        res.extend(['feature %s' % p.id for p in DBSession.query(Parameter).order_by(Parameter.pk)])
+        #res.extend(['feature %s' % p.id for p in DBSession.query(Parameter).order_by(Parameter.pk)])
         return res
 
     def row(self, req, fp, item, index):  # pragma: no cover
-        valuesets = DBSession.query(ValueSet)\
-            .filter(ValueSet.language_pk == item.pk)\
-            .options(joinedload(ValueSet.parameter), joinedload(ValueSet.values))
+        valuesets = []#DBSession.query(ValueSet)\
+            #.filter(ValueSet.language_pk == item.pk)\
+            #.options(joinedload(ValueSet.parameter), joinedload(ValueSet.values))
         values = {'feature %s' % vs.parameter.id: vs.values[0].domainelement.name for vs in valuesets}
         for name, getter in self.md_fields:
             values[name] = getter(item) or ''
@@ -41,7 +41,7 @@ class Matrix(CsvDump):
 
 
 def includeme(config):
-    config.register_download(Matrix(Language, 'ewave', description='eWAVE value matrix'))
+    config.register_download(Matrix(Language, 'ewave', description='eWAVE varieties as csv'))
     config.register_adapter(
         GeoJsonContributions, IContribution, IIndex, name=GeoJsonContributions.mimetype)
     config.register_download(Download(
