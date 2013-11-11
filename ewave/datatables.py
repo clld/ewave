@@ -88,7 +88,7 @@ class WaveContributions(datatables.Contributions):
 
     def col_defs(self):
         return [
-            #OrderNumberCol(self),
+            IntegerIdCol(self, 'id'),
             LinkCol(self, 'name', sTitle='Variety'),
             ContributorsCol(self, 'contributors', bSearchable=False, bSortable=False),
             TypeCol(self, 'type'),
@@ -190,15 +190,20 @@ class Values(datatables.Values):
                         get_obj=lambda i: i.valueset.language),
                 _RegionCol(self, 'region'),
                 _TypeCol(self, 'type'),
-                _ValueNameCol(self, 'name'),
+                _ValueNameCol(self, 'value'),
                 LinkToMapCol(self, 'm', get_obj=lambda i: i.valueset.language),
             ]
         if self.language:
             return [
-                LinkCol(self, 'feature',
-                        model_col=common.Parameter.name,
-                        get_obj=lambda i: i.valueset.parameter),
-                _ValueNameCol(self, 'name'),
+                IntegerIdCol(
+                    self, 'fid',
+                    get_object=lambda i: i.valueset.parameter,
+                    model_col=common.Parameter.id),
+                LinkCol(
+                    self, 'feature',
+                    model_col=common.Parameter.name,
+                    get_obj=lambda i: i.valueset.parameter),
+                _ValueNameCol(self, 'value'),
                 # TODO: feature category
             ]
         return [_ValueNameCol(self, 'name')]

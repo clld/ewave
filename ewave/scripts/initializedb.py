@@ -90,6 +90,14 @@ def main(args):
         except Exception:
             return None
 
+    contributors = {}
+    xls = xlrd.open_workbook(args.data_file('eWAVE2-Contributors.xlsx'))
+    sheet = xls.sheet_by_name('Tabelle1')
+    fields = [sheet.cell(0, i).value for i in range(sheet.ncols)]
+    for i in range(1, sheet.nrows):
+        values = dict(zip(fields, [sheet.cell(i, j).value for j in range(sheet.ncols)]))
+        contributors[slug(values['Voller Name'])] = values
+
     xls = xlrd.open_workbook(args.data_file('ewave.xls'))
     varieties = {}
     values = {}
@@ -151,20 +159,12 @@ def main(args):
             models.FeatureCategory, name, id=id, name=name, description=description)
     data['FeatureCategory']['Voice'] = data['FeatureCategory']['Verb Morphology']
 
-    #for id, name, description in [
-    #    ('L1t', 'Low-contact traditional L1 dialects', 'Traditional, regional non-standard mother-tongue varieties, e.g. East Anglian English and the dialects spoken in the Southwest, the Southeast and the North of England, as well as, in North America, Newfoundland English, Appalachian English and Ozark English.'),
-    #    ('L1c', 'High-contact L1 varieties', 'This includes transplanted L1 Englishes and colonial standards (e.g. Bahamian English, New Zealand English), as well as language shift varieties (e.g. Irish English) and standard varieties (e.g. colloquial American English, colloquial British English).'),
-    #    ('L2', 'L2 varieties', 'Institutionalized indigenized non-native varieties like Pakistani English, Jamaican English, Hong Kong English, Ghanaian English and Kenyan English, but also non-native varieties that compete with local L1 varieties for institutional status, e.g. Chicano English and Black South African English.'),
-    #    ('P', 'Pidgins', 'English-based contact languages that developed for communication between two groups who did not share the same language, typically in restricted domains of use (especially trade). With the exception of Butler English, all the English-based pidgins in eWAVE (e.g. Tok Pisin, Nigerian Pidgin and Ghanaian Pidgin) can be considered expanded pidgins, i.e. in contrast to prototypical pidgins they are less restricted in terms of domains of use, and many of them are spoken as native or primary languages by a considerable proportion of their speakers.'),
-    #    ('C', 'Creoles', 'English-based contact languages that developed in settings where a non-English-speaking group was under strong pressure to acquire and use some form of English, while access to its L1 speakers was severely limited (e.g. in plantation settings). Many creoles have become the native language of the majority of the population. Examples of English-based creoles in the eWAVE set include Jamaican Creole, Belizean Creole, Sranan, and Torres Strait Creole.'),
-    #]:
-
     icons = {
-        'L1t': {'shape': 's', 'color': 'f38847'},
-        'L1c': {'shape': 'd', 'color': 'd22257'},
-        'L2': {'shape': 'c', 'color': 'a0fb75'},
-        'Cr': {'shape': 't', 'color': 'cb9a34'},
-        'P': {'shape': 'f', 'color': '4d6cee'},
+        'L1t': {'shape': 's', 'color': 'f38847', 'broad': 'L1'},
+        'L1c': {'shape': 'd', 'color': 'd22257', 'broad': 'L1'},
+        'L2': {'shape': 'c', 'color': 'a0fb75', 'broad': 'L2'},
+        'Cr': {'shape': 't', 'color': 'cb9a34', 'broad': 'P/C'},
+        'P': {'shape': 'f', 'color': '4d6cee', 'broad': 'P/C'},
     }
 
     for cat in read(args, 'language_cat'):
@@ -192,18 +192,15 @@ def main(args):
             description=lang['spec1'],
             variety=l)
 
-    urls = {
-        'Kautzsch': 'http://www.uni-regensburg.de/language-literature-culture/english-linguistics/staff/kautzsch/index.html',
-        'Wagner': 'http://www.english.ox.ac.uk/about-faculty/faculty-members/permanent-post-holders/wagner-pd-dr-susanne',
-    }
     for author in read(args, 'o1_author'):
+        contributor = contributors[slug(author['first_name'] + author['last_name'])]
         data.add(
             common.Contributor, author['id'],
             id=str(author['id']),
-            name="%(first_name)s %(last_name)s" % author,
-            address=author['address'],
-            email=author['email'],
-            url=urls.get(author['last_name'], author['website']))
+            name=contributor['Voller Name'],
+            address=contributor['Affiliation'],
+            email=contributor['E-Mail'],
+            url=contributor['Website'])
 
     abbr2lang = {}
     new_langs = []
@@ -367,7 +364,8 @@ def main(args):
 
     DBSession.flush()
 
-    for rec in bibtex.Database.from_file(args.data_file('eWAVE2References_tidy-1.bib')):
+    #for rec in bibtex.Database.from_file(args.data_file('eWAVE2References_tidy-1.bib')):
+    for rec in bibtex.Database.from_file(args.data_file('eWAVE2References.bib')):
         data.add(common.Source, slug(rec.id), _obj=bibtex2source(rec))
 
     for i, example in enumerate(excel.rows(xlrd.open_workbook(args.data_file('eWAVE2-Examples_tidy-1.xlsx')).sheets()[0], as_dict=True)):

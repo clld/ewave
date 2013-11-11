@@ -93,7 +93,7 @@
     map grammatical variation in the Anglophone world. In close
     collaboration with leading experts on the different variety types
     (including Lieselotte Anderwald, Susanne Michaelis, Rajend
-    Mesthrie, Peter Muehlhaeusler, Jeff Siegel, Peter Trudgill and
+    Mesthrie, Peter Mühlhäusler, Jeff Siegel, Peter Trudgill and
     Susanne Wagner) successive versions of a questionnaire were
     designed and discussed, before the version underlying
     <i>eWAVE</i>, with its 235
@@ -464,12 +464,12 @@ in</span> <i>eWAVE</i></p>
 <p class="P8">47</p>
 </td>
 <td style="text-align:left;width:1.3729in;" class="Table2_D1">
-<p class="P8">20,0%</p>
+<p class="P8">20.0%</p>
 </td>
 </tr>
 <tr class="Table22">
 <td style="text-align:left;width:2.5965in;" class="Table2_A1">
-<p class="P7">Noun Phrase</p>
+<p class="P7">Noun phrase</p>
 </td>
 <td style="text-align:left;width:1.0479in;" class="Table2_A1">
 <p class="P8">48-87</p>
@@ -478,7 +478,7 @@ in</span> <i>eWAVE</i></p>
 <p class="P8">40</p>
 </td>
 <td style="text-align:left;width:1.3729in;" class="Table2_D1">
-<p class="P8">17,0%</p>
+<p class="P8">17.0%</p>
 </td>
 </tr>
 <tr class="Table22">
@@ -492,7 +492,7 @@ in</span> <i>eWAVE</i></p>
 <p class="P8">33</p>
 </td>
 <td style="text-align:left;width:1.3729in;" class="Table2_D1">
-<p class="P8">14,0%</p>
+<p class="P8">14.0%</p>
 </td>
 </tr>
 <tr class="Table22">
@@ -506,7 +506,7 @@ in</span> <i>eWAVE</i></p>
 <p class="P8">7</p>
 </td>
 <td style="text-align:left;width:1.3729in;" class="Table2_D1">
-<p class="P8">3,0%</p>
+<p class="P8">3.0%</p>
 </td>
 </tr>
 <tr class="Table22">
@@ -520,7 +520,7 @@ in</span> <i>eWAVE</i></p>
 <p class="P8">26</p>
 </td>
 <td style="text-align:left;width:1.3729in;" class="Table2_D1">
-<p class="P8">11,1%</p>
+<p class="P8">11.1%</p>
 </td>
 </tr>
 <tr class="Table22">
@@ -534,7 +534,7 @@ in</span> <i>eWAVE</i></p>
 <p class="P8">16</p>
 </td>
 <td style="text-align:left;width:1.3729in;" class="Table2_D1">
-<p class="P8">6,8%</p>
+<p class="P8">6.8%</p>
 </td>
 </tr>
 <tr class="Table22">
@@ -548,7 +548,7 @@ in</span> <i>eWAVE</i></p>
 <p class="P8">15</p>
 </td>
 <td style="text-align:left;width:1.3729in;" class="Table2_D1">
-<p class="P8">6,4%</p>
+<p class="P8">6.4%</p>
 </td>
 </tr>
 <tr class="Table22">
@@ -562,7 +562,7 @@ in</span> <i>eWAVE</i></p>
 <p class="P8">15</p>
 </td>
 <td style="text-align:left;width:1.3729in;" class="Table2_D1">
-<p class="P8">6,4%</p>
+<p class="P8">6.4%</p>
 </td>
 </tr>
 <tr class="Table22">
@@ -576,12 +576,12 @@ in</span> <i>eWAVE</i></p>
 <p class="P8">11</p>
 </td>
 <td style="text-align:left;width:1.3729in;" class="Table2_D1">
-<p class="P8">4,7%</p>
+<p class="P8">4.7%</p>
 </td>
 </tr>
 <tr class="Table22">
 <td style="text-align:left;width:2.5965in;" class="Table2_A1">
-<p class="P7">Adverbial Subordination</p>
+<p class="P7">Adverbial subordination</p>
 </td>
 <td style="text-align:left;width:1.0479in;" class="Table2_A1">
 <p class="P8">211-215</p>
@@ -590,12 +590,12 @@ in</span> <i>eWAVE</i></p>
 <p class="P8">5</p>
 </td>
 <td style="text-align:left;width:1.3729in;" class="Table2_D1">
-<p class="P8">2,1%</p>
+<p class="P8">2.1%</p>
 </td>
 </tr>
 <tr class="Table22">
 <td style="text-align:left;width:2.5965in;" class="Table2_A1">
-<p class="P7">Adverbs and Prepositions</p>
+<p class="P7">Adverbs and prepositions</p>
 </td>
 <td style="text-align:left;width:1.0479in;" class="Table2_A1">
 <p class="P8">216-222</p>
@@ -604,7 +604,7 @@ in</span> <i>eWAVE</i></p>
 <p class="P8">7</p>
 </td>
 <td style="text-align:left;width:1.3729in;" class="Table2_D1">
-<p class="P8">3,0%</p>
+<p class="P8">3.0%</p>
 </td>
 </tr>
 <tr class="Table22">
@@ -618,7 +618,7 @@ in</span> <i>eWAVE</i></p>
 <p class="P8">13</p>
 </td>
 <td style="text-align:left;width:1.3729in;" class="Table2_D1">
-<p class="P16">5,5%</p>
+<p class="P16">5.5%</p>
 </td>
 </tr>
 </table>
@@ -722,8 +722,7 @@ Pidgin, or Creole. The following classifications were used:</p>
     <i>eWAVE</i> in the future, and as before we
     welcome the comments and suggestions of the international research
     community and all users. This will help <i>eWAVE</i> to continually gain in reliability, strength and
-    richness as a tool and a point of reference as well as departure in
-    academic teaching and research.</p>
+    richness as a tool in academic teaching and research.</p>
 </%util:section>
 
 
@@ -755,7 +754,7 @@ Pidgin, or Creole. The following classifications were used:</p>
     and <i>APiCS</i> evolved, and made the transition
     from <i>eWAVE 1.0</i> to <i>eWAVE 2.0</i> as smooth as we could only wish.
     </p>
-    <p>Above all, the editors would like to thank the 85
+    <p>Above all, the editors would like to thank the 83
     collaborators serving as informants for this project. Without their
     readiness to devote a significant amount of their precious time to
     filling in the questionnaire, providing examples and answering our
@@ -792,12 +791,11 @@ at &lt;http://wals.info/&gt;, accessed 2011-07-28.</p>
 </tr>
 <tr class="Table31">
 <td style="text-align:left;width:10.0181in;" class="Table3_A1">
-<p class="P21">Michaelis, Susanne Maria &amp; Maurer, Philippe
-&amp; Haspelmath, Martin &amp; Huber, Magnus (eds.) 2013.
-<i>Atlas of Pidgin and Creole Language Structures
-Online.</i> Leipzig: Max Planck Institute for Evolutionary
-Anthropology. (Available online at http://apics-online.info,
-Accessed on 2013-11-04.)</p>
+<p class="P21">Michaelis, Susanne Maria, Philippe Maurer, Martin Haspelmath and Magnus Huber, eds. 2013.
+<i>Atlas of Pidgin and Creole Language Structures Online</i>.
+Leipzig: Max Planck Institute for Evolutionary Anthropology.
+(Available online at http://apics-online.info, Accessed on 2013-11-04.)
+</p>
 </td>
 </tr>
 </table>

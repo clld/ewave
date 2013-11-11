@@ -24,7 +24,7 @@
     <a href="${request.route_url('contact')}">Bernd Kortmann</a> and
     <a href="${request.route_url('contact')}">Kerstin Lunkenheimer</a>. eWAVE is unique not only in its coverage and
     user-friendliness, but also in being an open access resource. As such it has the potential for serving both as a teaching tool
-    in academic teaching around the world and as an indispensable research tool by specialists in many different fields of linguistics,
+    in academic teaching around the world and as an indispensable research tool for specialists in many different fields of linguistics,
     including creolistics, dialectology, dialect syntax, language change, language typology, sociolinguistics, second language acquisition,
     and the study of World Englishes and learner Englishes.
 </p>
@@ -62,9 +62,8 @@
     The information required to answer questions of this kind can be found in the central parts of eWAVE: the
     <a href="${request.route_url('languages')}">varieties index</a>, the <a href="${request.route_url('parameters')}">features index</a>,
     and the individual variety and feature profiles. These combine searchable catalogues of varieties and of morphosyntactic features with interactive maps,
-    and allow you to explore in detail the distribution of features within and across varieties of English and English-based Pidgins and Creoles worldwide
-    ##(see the <a href="http://www.ewave-atlas.org:80/help">help pages</a> for more details)
-    . Ultimately, the information provided in eWAVE can also be used
+    and allow you to explore in detail the distribution of features within and across varieties of English and English-based Pidgins and Creoles worldwide.
+    Ultimately, the information provided in eWAVE can also be used
     for the investigation of more general questions, such as the following: Which features generally are characteristic of a particular variety type
     (e.g. L2 varieties)? In which domain of grammar is there most/least heterogeneity/homogeneity among varieties of English worldwide? Are English-based
     pidgins and creoles as a group significantly different from other varieties in terms of morphosyntax?
