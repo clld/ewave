@@ -131,11 +131,11 @@ def main(args):
         description='The Electronic World Atlas of Varieties of English',
         domain='ewave-atlas.org',
         published=date(2013, 11, 15),
-        license='http://creativecommons.org/licenses/by-sa/3.0/',
+        license='http://creativecommons.org/licenses/by/3.0/',
         contact='bernd.kortmann@anglistik.uni-freiburg.de',
         jsondata={
-            'license_icon': 'http://i.creativecommons.org/l/by-sa/3.0/88x31.png',
-            'license_name': 'Creative Commons Attribution-ShareAlike 3.0 Unported License'})
+            'license_icon': 'cc-by.png',
+            'license_name': 'Creative Commons Attribution 3.0 Unported License'})
     DBSession.add(dataset)
     common.Editor(dataset=dataset, contributor=common.Contributor(id='ed1', name='Bernd Kortmann'), ord=1)
     common.Editor(dataset=dataset, contributor=common.Contributor(id='ed2', name='Kerstin Lunkenheimer'), ord=2)
