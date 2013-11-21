@@ -9,12 +9,11 @@
 <p>
     WELCOME to the electronic World Atlas of Varieties of English! eWAVE was designed and compiled at the
     ${h.external_link('http://www.frias.uni-freiburg.de/', label='Freiburg Institute for Advanced Studies (FRIAS)')}
-    and the English Department of the University of Freiburg, Germany, between 2008 and 2013. eWAVE is an interactive database on
-    morphosyntactic variation in spontaneous spoken English mapping ${stats['features']} features from about a dozen
-    ##<a href="http://www.ewave-atlas.org:80/welcome/introduction#grammar">
-    domains of grammar
-    ##</a>
-    in ${stats['vl']} varieties of English
+    and the English Department of the University of Freiburg, Germany, primarily between 2008 and 2011,
+    when it was first released. The current release (eWAVE 2.0, November 2013) is a substantially updated and
+    extended version. eWAVE is an interactive database on
+    morphosyntactic variation in spontaneous spoken English mapping ${stats['features']} features from a dozen
+    domains of grammar in now ${stats['vl']} varieties of English
     (traditional dialects, high-contact mother-tongue Englishes, and indigenized second-language Englishes) and ${stats['vpc']} English-based
     Pidgins and Creoles in eight Anglophone world regions (Africa, Asia, Australia, British Isles, Caribbean, North America, Pacific,
     and the South Atlantic; see
@@ -32,14 +31,16 @@
     eWAVE was partly designed and entirely programmed in collaboration with the
     ${h.external_link('http://www.eva.mpg.de/', label='Max Planck Institute for Evolutionary Anthropology')}
     (Leipzig),
-    and is also hosted by the MPI. Since eWAVE is designed as an evolving interactive tool, we are planning to have annual
-    ##<a href="http://www.ewave-atlas.org:80/welcome/introduction#future">
-    updates
-    ##</a>
-    . A similar project is the MPI-EVA's
-    ${h.external_link('http://apics-online.info', label='APiCS')}
-    (Atlas of Pidgin and Creole Language Structures; edited by Michaelis, Maurer, Haspelmath and Huber), which appeared in 2013,
-    both as a book atlas and as an electronic database like eWAVE.
+    and is also hosted by the MPI. Since eWAVE is designed as an evolving interactive tool, we are planning to have
+    regular updates.
+    The most recent substantial update (November 2013) introduced two new datasets
+    (<a href="${request.route_url('contribution', id='76')}">Cape Flats English</a> and
+    <a href="${request.route_url('contribution', id='75')}">Philippine English</a>) as well
+    as a number of updates to existing data points (see
+    <a href="${request.route_url('changes')}">History</a>), a host of new examples, and substantial
+    changes to the user interface to fit in with the architecture of the MPI-EVA’s other linguistic database
+    projects – most notably ${h.external_link('http://apics-online.info', label='APiCS Online')}
+    (the Atlas of Pidgin and Creole Language Structures Online; Michaelis, Maurer, Haspelmath and Huber, eds. 2013).
 </p>
 <p>
     In January 2013 De Gruyter Mouton published in print the <i>Mouton World Atlas of Variation of English</i>,  which offers
