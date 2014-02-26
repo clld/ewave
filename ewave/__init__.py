@@ -87,7 +87,7 @@ def main(global_config, **settings):
         ('sentences', partial(menu_item, 'sentences')),
         ('sources', partial(menu_item, 'sources')),
     )
-
+    config.include('clldmpg')
     config.include('ewave.maps')
     config.include('ewave.datatables')
     config.include('ewave.adapters')

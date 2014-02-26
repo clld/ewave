@@ -10,22 +10,32 @@ class Tests(TestWithApp):
     __setup_db__ = False
 
     def test_home(self):
-        self.app.get('/', status=200)
-        self.app.get('/changes', status=200)
+        self.app.get_html('/')
+        self.app.get_html('/changes')
 
     def test_contributions(self):
-        self.app.get('/languages', status=200)
-        self.app.get('/languages?sEcho=1', xhr=True, status=200)
-        self.app.get('/languages/1', status=200)
-        self.app.get('/languages.geojson', status=200)
+        self.app.get_html('/languages')
+        self.app.get_dt('/languages')
+        self.app.get_dt('/languages?iSortingCols=1&iSortCol_0=3&sSearch_3=a')
+        self.app.get_dt('/languages?iSortingCols=1&iSortCol_0=4&sSearch_4=a')
+        self.app.get_html('/languages/1')
+        self.app.get_json('/languages.geojson')
+
+    def test_sentences(self):
+        self.app.get_dt('/sentences?iSortingCols=1&iSortCol_0=3&sSearch_3=a')
 
     def test_parameters(self):
-        self.app.get('/parameters', status=200)
-        self.app.get('/parameters?sEcho=1', xhr=True, status=200)
-        self.app.get('/parameters/1', status=200)
-        self.app.get('/parameters/1.geojson', status=200)
-        self.app.get('/values?sEcho=1&parameter=1', xhr=True, status=200)
+        self.app.get_html('/parameters')
+        self.app.get_dt('/parameters?iSortingCols=1&iSortCol_0=4&sSearch_4=a')
+        self.app.get_html('/parameters/1')
+        self.app.get_json('/parameters/1.geojson')
+
+    def test_values(self):
+        self.app.get_dt('/values')
+        self.app.get_dt('/values?language=1')
+        self.app.get_dt('/values?parameter=1&iSortingCols=1&iSortCol_0=2&sSearch_2=a')
+        self.app.get_dt('/values?parameter=1&iSortingCols=1&iSortCol_0=3&sSearch_3=a')
 
     def test_sources(self):
-        self.app.get('/sources', status=200)
-        self.app.get('/sources/apics', status=200)
+        self.app.get_html('/sources')
+        self.app.get_html('/sources/apics')
