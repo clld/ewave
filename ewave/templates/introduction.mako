@@ -66,6 +66,7 @@
         <li><a href="#types">Variety types covered</a></li>
         <li><a href="#domains">Domains of grammar covered in <i>WAVE</i></a></li>
         <li><a href="#ratings">Feature ratings</a></li>
+        <li><a href="#statistics"><i>eWAVE 2.0</i> statistics</a></li>
         <li><a href="#limitations">Limitations and research potential of feature ratings</a></li>
         <li><a href="#future">The future of <i>eWAVE</i></a></li>
         <li><a href="#acknowledgements">Acknowledgements</a></li>
@@ -659,6 +660,45 @@ Pidgin, or Creole. The following classifications were used:</p>
 </table>
 </%util:section>
 
+<%util:section id="statistics" level="${4}">
+    <%def name="title()">
+        <i>eWAVE 2.0</i> statistics
+    </%def>
+    <ol>
+        <li>
+            <strong>Attestation</strong>
+            <p>
+                Attestation is a relative measure of how widespread a feature is in the set of eWAVE varieties.
+                It is expressed as a percentage and is calculated as the sum of all A-, B- and C-ratings for a
+                feature, divided by the number of varieties in the eWAVE dataset. The closer the value to 100%,
+                the more widespread the feature is.
+            </p>
+        </li>
+        <li>
+            <strong>Pervasiveness</strong>
+            <p>
+                Pervasiveness provides a measure of how pervasive a feature is on average in the varieties in
+                which it is attested. Pervasiveness is calculated as all A-ratings for a feature plus 0.6 times
+                the B-ratings for the same feature plus 0.3 times the C-ratings, divided by the sum of all
+                A-, B- and C-ratings for the feature. This value is then multiplied by 100 and expressed as a
+                percentage. A Pervasiveness value of 100% or close to 100% thus indicates that the feature is
+                highly pervasive (rated A) in all or most of the varieties for which it is attested, while a
+                value close to 30% (the lowest possible value) indicates that the feature is extremely rare
+                (rated C) in most or all of the varieties for which it is attested. Intermediate values are less
+                easy to interpret – here one has to look more closely at the ratio of A- to B- to C-values. Two
+                more things should also be noted here:
+            </p>
+            <ol>
+                <li>The Pervasiveness value does not provide information on how widespread a feature is in the
+                    entire eWAVE dataset, i.e. for how many varieties the feature is actually attested.</li>
+                <li>Since the eWAVE contributors did not all use exactly the same strategies in deciding when
+                    to give a feature an A- vs. a B- or a C- vs. a B- rating, it is very difficult to translate
+                    the ratings into numerical values that adequately reflect the differences between A-, B-
+                    and C-ratings. The choice made here (1 for A, 0.6 for B and 0.3 for C) is certainly only
+                    one of many, and further testing is required to see how adequate this model is.</li>
+            </ol>
+    </ol>
+</%util:section>
 
 <%util:section title="Limitations and research potential of feature ratings" id="limitations" level="${4}">
     <p>It should be obvious that in large-scale surveys

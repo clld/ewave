@@ -124,8 +124,14 @@ class Features(datatables.Parameters):
         return [
             IntegerIdCol(self, 'id'),
             LinkCol(self, 'name', sTitle='Feature name'),
-            PercentCol(self, 'attestation', model_col=Feature.attestation),
-            PercentCol(self, 'pervasiveness', model_col=Feature.pervasiveness),
+            PercentCol(
+                self, 'attestation', 
+                sDescription="Percentage of varieties in which the feature was rated A, B or C.", 
+                model_col=Feature.attestation),
+            PercentCol(
+                self, 'pervasiveness', 
+                sDescription="Average pervasiveness of the feature in the varieties in which it is attested. Values range between 100% (feature received only A-ratings) and 30% (feature received only C-ratings).", 
+                model_col=Feature.pervasiveness),
             CategoryCol(self, 'area'),
         ]
 
