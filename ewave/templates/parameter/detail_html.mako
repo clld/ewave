@@ -30,6 +30,7 @@
     % endif
 </div>
 
-${request.map.render()}
+<% values = request.get_datatable('values', h.models.Value, parameter=ctx) %>
+${request.get_map('parameter', col={c.name: c for c in values.cols}.get('type')).render()}
 
-${util.values_and_sentences()}
+${util.values_and_sentences(values_dt=values)}
