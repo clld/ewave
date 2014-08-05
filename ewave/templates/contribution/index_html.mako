@@ -6,7 +6,7 @@
 
 <h2>Varieties</h2>
 
-${request.get_map('contributions', col={c.name: c for c in ctx.cols}.get('type')).render()}
+${request.get_map('contributions', col='type', dt=ctx).render()}
 
 <div>
     ${ctx.render()}

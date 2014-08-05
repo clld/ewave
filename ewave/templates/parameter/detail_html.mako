@@ -31,6 +31,6 @@
 </div>
 
 <% values = request.get_datatable('values', h.models.Value, parameter=ctx) %>
-${request.get_map('parameter', col={c.name: c for c in values.cols}.get('type')).render()}
+${request.get_map('parameter', col='type', dt=values).render()}
 
 ${util.values_and_sentences(values_dt=values)}
