@@ -2,9 +2,6 @@ import os
 
 from setuptools import setup, find_packages
 
-here = os.path.abspath(os.path.dirname(__file__))
-README = open(os.path.join(here, 'README.txt')).read()
-CHANGES = open(os.path.join(here, 'CHANGES.txt')).read()
 
 requires = [
     'clld>=0.16',
@@ -15,12 +12,18 @@ requires = [
     'pyramid_tm',
     'zope.sqlalchemy',
     'waitress',
-    ]
+    'psycopg2',
+]
+
+tests_require = [
+    'WebTest >= 1.3.1', # py3 compat
+    'mock',
+]
 
 setup(name='ewave',
       version='0.0',
       description='ewave',
-      long_description=README + '\n\n' + CHANGES,
+      long_description='',
       classifiers=[
         "Programming Language :: Python",
         "Framework :: Pyramid",
@@ -35,7 +38,7 @@ setup(name='ewave',
       include_package_data=True,
       zip_safe=False,
       install_requires=requires,
-      tests_require=requires,
+      tests_require=tests_require,
       test_suite="ewave",
       entry_points="""\
       [paste.app_factory]

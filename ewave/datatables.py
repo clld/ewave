@@ -35,9 +35,9 @@ class AltTypeCol(Col):
 
 class Sentences(BaseSentences):
     def col_defs(self):
-        return filter(
+        return list(filter(
             lambda col: col.name not in ['type', 'd', 'analyzed', 'gloss', 'description'],
-            super(Sentences, self).col_defs()) + [AltTypeCol(self, 'type')]
+            super(Sentences, self).col_defs())) + [AltTypeCol(self, 'type')]
 
 
 #
