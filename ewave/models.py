@@ -37,7 +37,7 @@ class FeatureCategory(Base, IdNameDescriptionMixin):
 # specialized common mapper classes
 #-----------------------------------------------------------------------------
 @implementer(interfaces.ILanguage)
-class Variety(Language, CustomModelMixin):
+class Variety(CustomModelMixin, Language):
     pk = Column(Integer, ForeignKey('language.pk'), primary_key=True)
     region_pk = Column(Integer, ForeignKey('region.pk'))
     type_pk = Column(Integer, ForeignKey('varietytype.pk'))
@@ -53,14 +53,14 @@ class Variety(Language, CustomModelMixin):
 
 
 @implementer(interfaces.IContribution)
-class WaveContribution(Contribution, CustomModelMixin):
+class WaveContribution(CustomModelMixin, Contribution):
     pk = Column(Integer, ForeignKey('contribution.pk'), primary_key=True)
     variety_pk = Column(Integer, ForeignKey('variety.pk'))
     variety = relationship(Variety, backref=backref('contribution', uselist=False))
 
 
 @implementer(interfaces.IParameter)
-class Feature(Parameter, CustomModelMixin):
+class Feature(CustomModelMixin, Parameter):
     pk = Column(Integer, ForeignKey('parameter.pk'), primary_key=True)
     category_pk = Column(Integer, ForeignKey('featurecategory.pk'))
     category = relationship(FeatureCategory, backref=backref('features'))
