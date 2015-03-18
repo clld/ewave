@@ -20,7 +20,7 @@ class Matrix(CsvDump):
         ('Variety', lambda p: p.name),
         ('Contributor(s)', lambda p: ' and '.join(c.name for c in p.contribution.primary_contributors)),
         ('Variety type (narrow)', lambda p: p.type.id),
-        ('Variety type (broad)', lambda p: p.type.jsondatadict['broad']),
+        ('Variety type (broad)', lambda p: p.type.jsondata['broad']),
         ('World Region', lambda p: p.region.name),
     ]
 

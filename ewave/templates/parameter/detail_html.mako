@@ -24,7 +24,7 @@
             <dt>Typical example:</dt>
             <dd><i>${ctx.description}</i></dd>
             <dt>Example source:</dt>
-            <dd>${ctx.jsondatadict.get('example_source')}</dd>
+            <dd>${ctx.jsondata.get('example_source')}</dd>
         </dl>
     </div>
     % endif
