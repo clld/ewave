@@ -1,10 +1,10 @@
 from functools import partial
 
-from clld.web.app import get_configurator, menu_item
+from pyramid.config import Configurator
+
+from clld.web.app import menu_item
 from clld.web.icon import MapMarker
 from clld import interfaces
-from clld.web.adapters.download import Download
-from clld.db.models import common
 
 # we must make sure custom models are known at database initialization!
 from ewave import models
@@ -74,11 +74,10 @@ def main(global_config, **settings):
         'language': '/varieties/{id:[^/\.]+}',
     }
     settings['sitemaps'] = 'contribution parameter sentence valueset'.split()
-    utilities = [
-        (WaveMapMarker(), interfaces.IMapMarker),
-        (link_attrs, interfaces.ILinkAttrs),
-    ]
-    config = get_configurator('ewave', *utilities, settings=settings)
+    config = Configurator(settings=settings)
+    config.include('clldmpg')
+    config.registry.registerUtility(WaveMapMarker(), interfaces.IMapMarker)
+    config.registry.registerUtility(link_attrs, interfaces.ILinkAttrs)
     config.register_menu(
         ('dataset', partial(menu_item, 'dataset', label='Home')),
         ('contributions', partial(menu_item, 'contributions')),
@@ -87,8 +86,4 @@ def main(global_config, **settings):
         ('sentences', partial(menu_item, 'sentences')),
         ('sources', partial(menu_item, 'sources')),
     )
-    config.include('clldmpg')
-    config.include('ewave.maps')
-    config.include('ewave.datatables')
-    config.include('ewave.adapters')
     return config.make_wsgi_app()

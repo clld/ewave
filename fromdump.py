@@ -16,7 +16,7 @@ Run
     cd ewave
     pip install -r requirements.txt
     python setup.py develop
-    python ewave/scripts/unfreeze.py sqlite.ini
+    clld-unfreeze sqlite.ini
     pserve sqlite.ini
 
 or equivalent to start the eWAVE web app accessible at

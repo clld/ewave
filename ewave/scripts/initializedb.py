@@ -364,7 +364,6 @@ def main(args):
 
     DBSession.flush()
 
-    #for rec in bibtex.Database.from_file(args.data_file('eWAVE2References_tidy-1.bib')):
     for rec in bibtex.Database.from_file(args.data_file('eWAVE2References.bib')):
         data.add(common.Source, slug(rec.id), _obj=bibtex2source(rec))
 

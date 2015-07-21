@@ -28,7 +28,6 @@ def dataset_detail_html(context=None, request=None, **kw):
 
 
 def parameter_detail_html(context=None, request=None, **kw):
-    res = []
     values = DBSession.query(common.Value.pk)\
         .join(common.ValueSet).filter(common.ValueSet.parameter_pk == context.pk)\
         .subquery()
