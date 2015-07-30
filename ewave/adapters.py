@@ -8,6 +8,9 @@ from clld.interfaces import IContribution, IIndex
 
 
 class GeoJsonContributions(GeoJsonLanguages):
+    def feature_iterator(self, ctx, req):
+        return ctx.get_query(limit=5000)
+
     def get_language(self, ctx, req, item):
         return item.variety
 

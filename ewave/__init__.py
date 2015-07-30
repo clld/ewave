@@ -73,17 +73,8 @@ def main(global_config, **settings):
         'languages': '/varieties',
         'language': '/varieties/{id:[^/\.]+}',
     }
-    settings['sitemaps'] = 'contribution parameter sentence valueset'.split()
     config = Configurator(settings=settings)
     config.include('clldmpg')
     config.registry.registerUtility(WaveMapMarker(), interfaces.IMapMarker)
     config.registry.registerUtility(link_attrs, interfaces.ILinkAttrs)
-    config.register_menu(
-        ('dataset', partial(menu_item, 'dataset', label='Home')),
-        ('contributions', partial(menu_item, 'contributions')),
-        ('parameters', partial(menu_item, 'parameters')),
-        ('contributors', partial(menu_item, 'contributors')),
-        ('sentences', partial(menu_item, 'sentences')),
-        ('sources', partial(menu_item, 'sources')),
-    )
     return config.make_wsgi_app()
