@@ -1,9 +1,9 @@
 from clld.web.assets import environment
-from path import path
+from clldutils.path import Path
 
 import ewave
 
 
 environment.append_path(
-    path(ewave.__file__).dirname().joinpath('static'), url='/ewave:static/')
+    Path(ewave.__file__).parent.joinpath('static').as_posix(), url='/ewave:static/')
 environment.load_path = list(reversed(environment.load_path))
