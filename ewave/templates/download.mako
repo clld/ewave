@@ -1,21 +1,18 @@
 <%inherit file="home_comp.mako"/>
+<%namespace name="clldmpgutil" file="clldmpg_util.mako"/>
 
 <h3>Downloads</h3>
 
 <div class="span5 well well-small">
     <dl>
-    % for model, dls in h.get_downloads(request):
-        <dt>${_(model)}</dt>
-        % for dl in dls:
-        <dd>
-            <a href="${dl.url(request)}">${dl.label(req)}</a>
-        </dd>
-        % endfor
-    % endfor
         <dt>The WAVE questionnaire</dt>
         <dd><a href="${request.static_url('ewave:static/WAVEquestionnaire.pdf')}">WAVEquestionnaire.pdf</a></dd>
     </dl>
+    <div>
+        ${clldmpgutil.downloads(request)}
+    </div>
 </div>
+
 <div class="span6">
     <p>
         <i>eWAVE</i> is published under a Creative Commons Attribution 3.0 License, so you are free

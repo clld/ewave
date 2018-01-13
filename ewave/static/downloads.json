@@ -1,0 +1,47 @@
+{
+    "1.0": {
+        "bitstreams": [
+            {
+                "last-modified": 1515858329678,
+                "checksum": "92a96b0cc97c4d25d058d3e9ae71224e",
+                "created": 1515858329564,
+                "checksum-algorithm": "MD5",
+                "bitstreamid": "ewave_dataset.cldf.zip",
+                "filesize": 227477,
+                "content-type": "application/zip"
+            },
+            {
+                "last-modified": 1515858324498,
+                "checksum": "134df4a1dfa4c7e891972b27f43804c2",
+                "created": 1515858324443,
+                "checksum-algorithm": "MD5",
+                "bitstreamid": "ewave_dataset.n3.gz",
+                "filesize": 1137289,
+                "content-type": "application/octet-stream"
+            },
+            {
+                "last-modified": 1515858302673,
+                "checksum": "3ae617a9fbac1752d3cb7530af66d03f",
+                "created": 1515858302632,
+                "checksum-algorithm": "MD5",
+                "bitstreamid": "ewave_language.csv.zip",
+                "filesize": 10552,
+                "content-type": "application/zip"
+            },
+            {
+                "last-modified": 1515858330716,
+                "checksum": "4ca136a5ced8d0d0ca766826eb7681d7",
+                "created": 1515858330521,
+                "checksum-algorithm": "MD5",
+                "bitstreamid": "ewave_source.bib.zip",
+                "filesize": 11164,
+                "content-type": "application/zip"
+            }
+        ],
+        "oid": "EAEA0-63B4-BE6D-987F-0",
+        "metadata": {
+            "title": "ewave 1.0 - downloads",
+            "creator": "pycdstar"
+        }
+    }
+}
