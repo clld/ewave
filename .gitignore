@@ -31,4 +31,3 @@ nosetests.xml
 .project
 .pydevproject
 .idea
-data
