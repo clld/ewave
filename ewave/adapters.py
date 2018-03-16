@@ -2,9 +2,14 @@ from sqlalchemy.orm import joinedload
 
 from clld.web.adapters.geojson import GeoJsonLanguages
 from clld.web.adapters.download import CsvDump, Download
+from clld.web.adapters.cldf import CldfConfig
 from clld.db.meta import DBSession
 from clld.db.models.common import Parameter, Language, Source, ValueSet
-from clld.interfaces import IContribution, IIndex
+from clld.interfaces import IContribution, IIndex, ICldfConfig
+
+
+class EwaveCldfConfig(CldfConfig):
+    module = 'StructureDataset'
 
 
 class GeoJsonContributions(GeoJsonLanguages):
@@ -44,8 +49,9 @@ class Matrix(CsvDump):
 
 
 def includeme(config):
-    config.register_download(Matrix(Language, 'ewave', description='eWAVE value matrix as csv'))
+    config.registry.registerUtility(EwaveCldfConfig(), ICldfConfig)
+    #config.register_download(Matrix(Language, 'ewave', description='eWAVE value matrix as csv'))
     config.register_adapter(
         GeoJsonContributions, IContribution, IIndex, name=GeoJsonContributions.mimetype)
-    config.register_download(Download(
-        Source, 'ewave', ext='bib', description="Sources as BibTeX"))
+    #config.register_download(Download(
+    #    Source, 'ewave', ext='bib', description="Sources as BibTeX"))
