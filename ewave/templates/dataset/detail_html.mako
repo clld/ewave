@@ -36,8 +36,7 @@
     The most recent substantial update (November 2013) introduced two new datasets
     (<a href="${request.route_url('contribution', id='76')}">Cape Flats English</a> and
     <a href="${request.route_url('contribution', id='75')}">Philippine English</a>) as well
-    as a number of updates to existing data points (see
-    <a href="${request.route_url('changes')}">History</a>), a host of new examples, and substantial
+    as a number of updates to existing data points, a host of new examples, and substantial
     changes to the user interface to fit in with the architecture of the MPI-EVA’s other linguistic database
     projects – most notably ${h.external_link('http://apics-online.info', label='APiCS Online')}
     (the Atlas of Pidgin and Creole Language Structures Online; Michaelis, Maurer, Haspelmath and Huber, eds. 2013).
@@ -52,14 +51,16 @@
 <h3>What eWAVE can do for you</h3>
 <p>
     eWAVE facilitates the investigation of global-scale patterns of morphosyntactic variation in English and helps answering questions like the following:
-    <ul>
+</p>
+<ul>
 	<li>Which features are most/least widespread across varieties of English worldwide?</li>
 	<li>How many varieties of English worldwide share feature X?</li>
 	<li>Is feature X restricted to or characteristic of a particular part of the English-speaking world?</li>
 	<li>Is feature X restricted to or characteristic of a particular group of varieties?</li>
 	<li>Does variety A have feature X?</li>
 	<li>In which area of grammar does variety A differ most from variety B?</li>
-    </ul>
+</ul>
+<p>
     The information required to answer questions of this kind can be found in the central parts of eWAVE: the
     <a href="${request.route_url('languages')}">varieties index</a>, the <a href="${request.route_url('parameters')}">features index</a>,
     and the individual variety and feature profiles. These combine searchable catalogues of varieties and of morphosyntactic features with interactive maps,
@@ -77,6 +78,3 @@
 <blockquote>
     ${h.newline2br(citation.render(ctx, request))|n}
 </blockquote>
-##<p>
-##    More information on how to cite individual parts of eWAVE can be found in the <a href="http://www.ewave-atlas.org/help">help pages</a>.
-##</p>

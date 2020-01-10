@@ -1,13 +1,10 @@
 import pytest
 
-pytest_plugins = ['clld']
-
 
 @pytest.mark.parametrize(
     "method,path",
     [
         ('get_html', '/'),
-        ('get_html', '/changes'),
         ('get_html', '/languages'),
         ('get_dt', '/languages'),
         ('get_dt', '/languages?iSortingCols=1&iSortCol_0=3&sSearch_3=a'),

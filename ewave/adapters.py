@@ -1,10 +1,10 @@
 from sqlalchemy.orm import joinedload
 
 from clld.web.adapters.geojson import GeoJsonLanguages
-from clld.web.adapters.download import CsvDump, Download
+from clld.web.adapters.download import CsvDump
 from clld.web.adapters.cldf import CldfConfig
 from clld.db.meta import DBSession
-from clld.db.models.common import Parameter, Language, Source, ValueSet
+from clld.db.models.common import Parameter, ValueSet
 from clld.interfaces import IContribution, IIndex, ICldfConfig
 
 

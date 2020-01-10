@@ -1,10 +1,8 @@
-from functools import partial
-
 from pyramid.config import Configurator
 
-from clld.web.app import menu_item
 from clld.web.icon import MapMarker
 from clld import interfaces
+from clldutils import svg
 
 # we must make sure custom models are known at database initialization!
 from ewave import models
@@ -45,7 +43,7 @@ class WaveMapMarker(MapMarker):
             icon = 'c' + ctx.jsondata['color']
 
         if icon:
-            return req.registry.getUtility(interfaces.IIcon, icon).url(req)
+            return svg.data_url(svg.icon(icon))
 
         return super(WaveMapMarker, self).__call__(ctx, req)  # pragma: no cover
 

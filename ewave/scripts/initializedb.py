@@ -1,415 +1,163 @@
-# coding=utf8
-from __future__ import unicode_literals
-import sys
 from datetime import date
-import os
-import sys
 import re
-import csv
 from collections import defaultdict
-from functools import partial
 
-from sqlalchemy.orm import joinedload_all
-import xlrd
-from bs4 import BeautifulSoup as bs
-from path import path
-from clld.scripts.util import initializedb, Data, bibtex2source
+from sqlalchemy.orm import joinedload
+from clld.scripts.util import Data, bibtex2source
 from clld.db.meta import DBSession
 from clld.db.models import common
-from clld.lib import excel
 from clld.lib import bibtex
-from clld.util import slug
+from clldutils.misc import slug
+from pycldf import Sources
 
 import ewave
 from ewave import models
 
+CODE_COLORS = {
+    'A': 'fe3856',
+    'B': 'ed9c07',
+    'C': 'efe305',
+    'D': 'f3ffb0',
+    'X': 'e8e8e8',
+    '?': 'ffffff',
+}
 
-COL_PATTERN = re.compile('\s*`(?P<name>[^`]+)`\s*(?P<type>[a-z]+)')
-
-
-def converter(type_, x):
-    x = x.strip()
-    if x == str(r'\N'):
-        return None
-    if type_ in ['int']:
-        return int(x)
-    return x.decode('utf8')
-
-
-TYPE_MAP = defaultdict(lambda: partial(converter, 'text'), int=partial(converter, 'int'))
-
-
-def read_schema(args, table):
-    fields = []
-    for line in file(args.data_file('%s.sql' % table)):
-        if line.startswith('  `'):
-            m = COL_PATTERN.match(line)
-            if m.group('name').endswith('_id'):
-                fields.append((m.group('name'), int))
-            else:
-                fields.append((m.group('name'), TYPE_MAP[m.group('type')]))
-    return fields
-
-
-def read(args, table):
-    schema = read_schema(args, table)
-
-    for row in csv.reader(file(args.data_file('%s.txt' % table)), delimiter=str('\t')):
-        yield dict((schema[i][0], schema[i][1](v)) for i, v in enumerate(row))
-
-
-def examples(args, id_):
-    def text(tag):
-        return ' '.join(list(tag.stripped_strings)).strip()
-
-    filename = args.data_file('%.2d.html' % id_)
-    if filename.exists():
-        with open(filename) as fp:
-            soup = bs(fp.read())
-        for tr in soup.find_all('tr'):
-            tds = tr.find_all('td')
-            try:
-                fid = int(text(tds[0]))
-            except:
-                continue
-            ps = tds[2].find_all('p')
-            if id_ != 53 and len(ps) % 3 == 0:
-                for i in range(0, len(ps), 3):
-                    primary, gloss, translation = ps[i:i+3]
-                    yield (fid, text(primary), text(gloss), text(translation))
-            else:
-                yield (fid, text(tds[2]), None, None)
+VARIETY_TYPE_ICONS = {
+    'L1t': {'shape': 's', 'color': 'f38847', 'broad': 'L1'},
+    'L1c': {'shape': 'd', 'color': 'd22257', 'broad': 'L1'},
+    'L2': {'shape': 'c', 'color': 'a0fb75', 'broad': 'L2'},
+    'Cr': {'shape': 't', 'color': 'cb9a34', 'broad': 'P/C'},
+    'P': {'shape': 'f', 'color': '4d6cee', 'broad': 'P/C'},
+}
 
 
 def main(args):
     data = Data()
-
-    def maybe_int(c):
-        try:
-            return int(c.value)
-        except Exception:
-            return None
-
-    contributors = {}
-    xls = xlrd.open_workbook(args.data_file('eWAVE2-Contributors.xlsx'))
-    sheet = xls.sheet_by_name('Tabelle1')
-    fields = [sheet.cell(0, i).value for i in range(sheet.ncols)]
-    for i in range(1, sheet.nrows):
-        values = dict(zip(fields, [sheet.cell(i, j).value for j in range(sheet.ncols)]))
-        contributors[slug(values['Voller Name'])] = values
-
-    xls = xlrd.open_workbook(args.data_file('ewave.xls'))
-    varieties = {}
-    values = {}
-    matrix = xls.sheet_by_name('matrixRAW-quer')
-    features = [maybe_int(matrix.cell(0, i)) for i in range(matrix.ncols)]
-
-    for i in range(3, matrix.nrows):
-        values[maybe_int(matrix.cell(i, 1))] = dict(
-            (features[j], matrix.cell(i, j).value.upper()) for j in range(6, matrix.ncols) if features[j])
-
-    features = {n: dict(name=matrix.cell(1, i).value) for i, n in enumerate(features)}
-
-    sheet = xls.sheet_by_name('Example sources')
-    for i in range(sheet.nrows):
-        id = maybe_int(sheet.cell(i, 0))
-        if id in features:
-            features[id]['example'] = sheet.cell(i, 2).value
-            features[id]['example_source'] = sheet.cell(i, 2).value
-
-    sheet = xls.sheet_by_name('var-infrmnts-type-regn-lat-lon')
-    for i in range(sheet.nrows):
-        if i == 0:
-            cols = [sheet.cell(i, j).value.lower() for j in range(sheet.ncols)]
-        else:
-            varieties[int(sheet.cell(i, 0).value)] = dict(
-                (cols[j], sheet.cell(i, j).value) for j in range(sheet.ncols))
 
     dataset = common.Dataset(
         id=ewave.__name__,
         name='eWAVE',
         description='The Electronic World Atlas of Varieties of English',
         domain='ewave-atlas.org',
-        published=date(2013, 11, 15),
+        published=date(2013, 11, 15),  # FIXME!
         license='http://creativecommons.org/licenses/by/3.0/',
         contact='bernd.kortmann@anglistik.uni-freiburg.de',
         jsondata={
             'license_icon': 'cc-by.png',
             'license_name': 'Creative Commons Attribution 3.0 Unported License'})
     DBSession.add(dataset)
-    common.Editor(dataset=dataset, contributor=common.Contributor(id='ed1', name='Bernd Kortmann'), ord=1)
-    common.Editor(dataset=dataset, contributor=common.Contributor(id='ed2', name='Kerstin Lunkenheimer'), ord=2)
 
-    for id, name, description in [
-        ('1', 'Pronouns', 'Pronouns, pronoun exchange, nominal gender'),
-        ('2', 'Noun Phrase', 'Noun phrase'),
-        ('3', 'Tense & Aspect', 'Verb phrase I: tense and aspect'),
-        ('4', 'Modal Verbs', 'Verb phrase II: modal verbs'),
-        ('5', 'Verb Morphology', 'Verb phrase III: verb morphology'),
-        #('6', 'Voice', 'Verb phrase IV: voice'),
-        ('6', 'Negation', 'Negation'),
-        ('7', 'Agreement', 'Agreement'),
-        ('8', 'Relativization', 'Relativization'),
-        ('9', 'Complementation', 'Complementation'),
-        ('10', 'Adverbial Subordination', 'Adverbial Subordination'),
-        ('11', 'Adverbs & Prepositions', 'Adverbs and prepositions'),
-        ('12', 'Discourse & Word Order', 'Discourse organization and word order'),
-    ]:
+    ed_pattern = re.compile('ed(?P<ord>[0-9]+)$')
+    for c in args.cldf['contributors.csv']:
+        contrib = data.add(
+            common.Contributor,
+            c['ID'],
+            id=c['ID'],
+            name=c['Name'],
+            email=c['Email'],
+            url=c['URL'],
+            address=c['Address'],
+        )
+        m = ed_pattern.match(c['ID'])
+        if m:
+            common.Editor(dataset=dataset, contributor=contrib, ord=int(m.group('ord')))
+
+    for fc in args.cldf['featurecategories.csv']:
         data.add(
-            models.FeatureCategory, name, id=id, name=name, description=description)
-    data['FeatureCategory']['Voice'] = data['FeatureCategory']['Verb Morphology']
+            models.FeatureCategory, fc['ID'],
+            id=fc['ID'], name=fc['Name'], description=fc['Description'])
 
-    icons = {
-        'L1t': {'shape': 's', 'color': 'f38847', 'broad': 'L1'},
-        'L1c': {'shape': 'd', 'color': 'd22257', 'broad': 'L1'},
-        'L2': {'shape': 'c', 'color': 'a0fb75', 'broad': 'L2'},
-        'Cr': {'shape': 't', 'color': 'cb9a34', 'broad': 'P/C'},
-        'P': {'shape': 'f', 'color': '4d6cee', 'broad': 'P/C'},
-    }
-
-    for cat in read(args, 'language_cat'):
-        cls = models.VarietyType if cat['name'] == 'cat1' else models.Region
-        if cat['name'] == 'cat1' and cat['value'] not in icons:
-            raise ValueError(cat['value'])
+    for vt in args.cldf['varietytypes.csv']:
         data.add(
-            cls, cat['value'],
-            id=cat['value'],
-            name=cat['name1'],
-            description=cat['definition'],
-            jsondata=icons.get(cat['value']))
+            models.VarietyType, vt['ID'],
+            id=vt['ID'],
+            name=vt['Name'],
+            description=vt['Description'],
+            jsondata=VARIETY_TYPE_ICONS[vt['ID']],
+        )
 
-    for lang in read(args, 'language'):
-        keys = ['id', 'name', 'latitude', 'longitude']
+    for vt in args.cldf['regions.csv']:
+        data.add(models.Region, vt['ID'], id=vt['ID'], name=vt['Name'])
+
+    for lang in args.cldf['LanguageTable']:
         l = data.add(
-            models.Variety, lang['id'],
-            region=data['Region'][lang['cat2']],
-            type=data['VarietyType'][lang['cat1']],
-            **{k: v for k, v in lang.items() if k in keys})
-        data.add(
-            models.WaveContribution, lang['id'],
-            id=str(lang['id']),
-            name=lang['name'],
-            description=lang['spec1'],
+            models.Variety, lang['ID'],
+            id=lang['ID'],
+            name=lang['Name'],
+            latitude=lang['Latitude'],
+            longitude=lang['Longitude'],
+            abbr=lang['abbr'],
+            region=data['Region'][lang['Region_ID']],
+            type=data['VarietyType'][lang['Type_ID']],
+        )
+        c = data.add(
+            models.WaveContribution, lang['ID'],
+            id=str(lang['ID']),
+            name=lang['Name'],
+            description=lang['Description'],
             variety=l)
-
-    for author in read(args, 'o1_author'):
-        contributor = contributors[slug(author['first_name'] + author['last_name'])]
-        data.add(
-            common.Contributor, author['id'],
-            id=str(author['id']),
-            name=contributor['Voller Name'],
-            address=contributor['Affiliation'],
-            email=contributor['E-Mail'],
-            url=contributor['Website'])
-
-    abbr2lang = {}
-    new_langs = []
-    desc = {
-        75: "Philippine English is one of the very few American-transplanted Englishes. "
-        "The language was introduced in the country by American colonization that "
-        "started in 1898. From only 300,000 users or 4% of the population at the "
-        "beginning of the 20th century, it is estimated that there were around 42 "
-        "million or 70% of the population who are able to use English, almost fifty "
-        "years after the American colonization ended at the end of the century "
-        "(Gonzalez, 1996). In the implementing 1987 Constitution, English is regarded as "
-        "one of the two official languages of the Philippines, the other one being the "
-        "national language Filipino. It also interacts with 180 other Austronesian-type "
-        "languages used in the country, nine of them considered major languages. English "
-        "plays a major role in the Philippine society, offering a rightfully unique "
-        "rendering of the psycho-sociolinguistic phenomenon of the spread of English: "
-        "A sizeable number of Filipinos even learn it as a first language (and sometimes "
-        "only language). The language is widely used in government, education, business, "
-        "science and technology, and the arts but it has also penetrated the personal "
-        "and private lives of Filipinos, where code-switching can be prevalent. "
-        "Proficiency in English may also be equated with socio-economic status; those "
-        "with higher socio-economic status tend to be more proficient in the language. "
-        "Philippine English is presently entering a stage of structural "
-        "systematicization (cf. Borlongan & Lim, 2012) and is being codified through "
-        "dictionaries and grammars. Consequently, some claims are made that Philippine "
-        "English is already at the phase of endonormative stabilization (Borlongan, 2011)."
-    }
-    for vid, v in varieties.items():
-        if vid not in data['Variety']:
-            new_langs.append(vid)
-            l = data.add(
-                models.Variety, vid,
-                id=str(vid),
-                name=v['variety'],
-                latitude=v['latitude'],
-                longitude=v['longitude'],
-                region=[r for r in data['Region'].values() if r.name == v['world region']][0],
-                type=data['VarietyType'][v['variety  type (narrow)']])
-            contribution = data.add(
-                models.WaveContribution, vid,
-                id=str(vid),
-                name=l.name,
-                description=desc.get(vid, ''),
-                variety=l)
-            if v['contributor(s)'] == 'Rajend Mesthrie':
-                v['contributor(s)'] = 'Rajend Mesthrie and Tracey Toefy and Sean Bowerman'
-            for name in v['contributor(s)'].split(' and '):
-                contributor = None
-                name = name.strip()
-                maxid = 0
-                for c in data['Contributor'].values():
-                    if int(c.id) > maxid:
-                        maxid = int(c.id)
-                    if c.name == name:
-                        contributor = c
-                        print '--- already known:', name
-                if not contributor:
-                    maxid += 1
-                    contributor = data.add(
-                        common.Contributor, maxid, id=str(maxid), name=name)
-                DBSession.add(common.ContributionContributor(
-                    contributor=contributor, contribution=contribution))
-        else:
-            l = data['Variety'][vid]
-        l.abbr = v['abbreviation'].strip()
-        abbr2lang[l.abbr] = l
-
-    for author in read(args, 'o1_author'):
-        for lang in filter(None, [l.strip() for l in author['langIDs'].split(',')]):
+        for i, cid in enumerate(lang['Contributor_ID']):
             DBSession.add(common.ContributionContributor(
-                contributor=data['Contributor'][author['id']],
-                contribution=data['WaveContribution'][int(lang)]))
+                contribution=c,
+                contributor=data['Contributor'][cid],
+                ord=i+1,
+            ))
 
-    domain = {
-        'A': ('feature is pervasive or obligatory', {'color': 'fe3856'}),
-        'B': ('feature is neither pervasive nor extremely rare', {'color': 'ed9c07'}),
-        'C': ('feature exists, but is extremely rare', {'color': 'efe305'}),
-        'D': ('attested absence of feature', {'color': 'f3ffb0'}),
-        'X': ('feature is not applicable (given the structural make-up of the variety/P/C)', {'color': 'e8e8e8'}),
-        '?': ('no information on feature is available', {'color': 'ffffff'}),
-    }
-
-    for param in read(args, 'lparam'):
+    for param in args.cldf['ParameterTable']:
         data.add(
-            models.Feature, param['id'],
-            id=str(param['id']),
-            category=data['FeatureCategory'][param['cat1']],
-            name=param['name'],
-            description=param['name1'],
-            jsondata={'example_source': param['spec1']})
+            models.Feature, param['ID'],
+            id=param['ID'],
+            category=data['FeatureCategory'][param['Category_ID']],
+            name=param['Name'],
+            description=param['Description'],
+            jsondata={'example_source': param['Example_Source']})
 
-    for de in read(args, 'lparamshaping'):
-        desc, jsondata = domain[de['name']]
+
+    for de in args.cldf['CodeTable']:
         data.add(
-            common.DomainElement, de['id'],
-            id=str(de['id']),
-            parameter=data['Feature'][de['lparam_id']],
-            name=de['name'],
-            description=desc,
-            jsondata=jsondata,
-            number=de['number'])
+            common.DomainElement, de['ID'],
+            id=de['ID'],
+            parameter=data['Feature'][de['Parameter_ID']],
+            name=de['Name'],
+            description=de['Description'],
+            jsondata={'color': CODE_COLORS[de['Name']]},
+            number=de['Number'])
 
-    # values:
-    changes = []
-    maxid = 0
-    for value in read(args, 'llps'):
-        if not int(value['value']):
-            continue
-        if value['id'] > maxid:
-            maxid = value['id']
-        de = data['DomainElement'][value['lparamshaping_id']]
-        if de.name != values[value['language_id']][int(de.parameter.id)]:
-            new_de = None
-            for _de in de.parameter.domain:
-                if _de.name == values[value['language_id']][int(de.parameter.id)]:
-                    new_de = _de
-                    break
-            if not new_de or new_de == de:
-                print values[value['language_id']][int(de.parameter.id)], ' =?= ', de.name
-            changes.append((str(value['language_id']), de.parameter.id, de.name, values[value['language_id']][int(de.parameter.id)]))
-            de = new_de
+    for rec in bibtex.Database.from_file(args.cldf.bibpath):
+        data.add(common.Source, slug(rec.id), _obj=bibtex2source(rec))
+
+    for example in args.cldf['ExampleTable']:
+        s = data.add(
+            common.Sentence, example['ID'],
+            id=example['ID'],
+            name=example['Primary_Text'],
+            gloss='\t'.join(example['Gloss']) if example['Gloss'] else None,
+            comment=example['Comment'] or None,
+            description=example['Translated_Text'] or None,
+            language=data['Variety'][example['Language_ID']])
+
+        for ref in example['Source']:
+            sid, pages = Sources.parse(ref)
+            DBSession.add(common.SentenceReference(
+                sentence=s, source=data['Source'][sid], description=pages, key=sid))
+
+    for value in args.cldf['ValueTable']:
+        de = data['DomainElement'][value['Code_ID']]
         vs = data.add(
-            common.ValueSet, value['id'],
-            id=str(value['id']),
-            contribution=data['WaveContribution'][value['language_id']],
-            parameter=de.parameter,
+            common.ValueSet, value['ID'],
+            id=value['ID'],
+            contribution=data['WaveContribution'][value['Language_ID']],
+            parameter=data['Feature'][value['Parameter_ID']],
             jsondata=de.jsondata,
-            language=data['Variety'][value['language_id']])
-        data.add(
-            common.Value, value['id'],
-            id=str(value['id']),
+            language=data['Variety'][value['Language_ID']])
+        v = data.add(
+            common.Value, value['ID'],
+            id=value['ID'],
             domainelement=de,
             valueset=vs)
 
-    dataset.jsondata['changes'] = {'2013': changes}
-    print len(changes), 'values changed'
-
-    for new_lang in new_langs:
-        for param, value in values[new_lang].items():
-            if new_lang == 75 and param == 195 and not value:
-                value = '?'
-            maxid += 1
-            parameter = data['Feature'][param]
-            de = None
-            for _de in parameter.domain:
-                if _de.name == value:
-                    de = _de
-            assert de
-            vs = data.add(
-                common.ValueSet, maxid,
-                id=str(maxid),
-                contribution=data['WaveContribution'][new_lang],
-                parameter=parameter,
-                jsondata=de.jsondata,
-                language=data['Variety'][new_lang])
-            data.add(
-                common.Value, maxid,
-                id=str(maxid),
-                domainelement=de,
-                valueset=vs)
-
-    DBSession.flush()
-
-    for rec in bibtex.Database.from_file(args.data_file('eWAVE2References.bib')):
-        data.add(common.Source, slug(rec.id), _obj=bibtex2source(rec))
-
-    for i, example in enumerate(excel.rows(xlrd.open_workbook(args.data_file('eWAVE2-Examples_tidy-1.xlsx')).sheets()[0], as_dict=True)):
-        if example['primary_text'] == 'Cf. Table 1 in section 3.1':
-            continue
-        lang = abbr2lang[example['language']]
-        if isinstance(example['feature number'], basestring):
-            fid = re.match('([0-9]+)', example['feature number']).groups()[0]
-        else:
-            fid = example['feature number']
-        fid = str(int(fid))
-        s = data.add(
-            common.Sentence, i+1,
-            id=str(i+1),
-            name=example['primary_text'],
-            gloss=example['gloss'] or None,
-            comment=example['comment'] or None,
-            description=example['translation'] or None,
-            language=lang)
-
-        for ref in (example['Source'] or '').split(';'):
-            if ref:
-                ref = ref.strip()
-                desc = None
-                if ':' in ref:
-                    ref, desc = [_s.strip() for _s in ref.split(':', 1)]
-                recid = slug(ref)
-                recid = {
-                    'allsopp996': 'allsopp1996',
-                    'orton1962': 'orton19621971',
-                    'bbcvoices': 'voices',
-                    'cottmann1963': 'cottman1963',
-                    'mooreetal1991': 'moore1991',
-                }.get(recid, recid)
-                if recid not in data['Source']:
-                    assert recid == '50'
-                    continue
-                DBSession.add(common.SentenceReference(
-                    sentence=s, source=data['Source'][recid], description=desc, key=ref))
-
-        vs = DBSession.query(common.ValueSet)\
-            .join(common.Parameter).join(common.Language)\
-            .filter(common.Parameter.id == fid)\
-            .filter(common.Language.pk == lang.pk).one()
-        DBSession.add(common.ValueSentence(sentence=s, value=vs.values[0]))
+        for eid in value['Example_ID']:
+            DBSession.add(common.ValueSentence(sentence=data['Sentence'][eid], value=v))
 
 
 def prime_cache(args):
@@ -419,16 +167,14 @@ def prime_cache(args):
     """
     nvarieties = DBSession.query(models.Variety.pk).count()
 
-    for feature in DBSession.query(models.Feature).options(joinedload_all(
-        common.Parameter.valuesets, common.ValueSet.values, common.Value.domainelement
-    )):
+    for feature in DBSession.query(models.Feature).options(
+        joinedload(common.Parameter.valuesets)
+                .joinedload(common.ValueSet.values)
+                .joinedload(common.Value.domainelement)
+    ):
         values = defaultdict(lambda: 0)
         for vs in feature.valuesets:
             values[vs.values[0].domainelement.name] += 1
         attested = values['A'] + values['B'] + values['C']
         feature.attestation = attested / float(nvarieties)
         feature.pervasiveness = (values['A'] + 0.6 * values['B'] + 0.3 * values['C']) / attested
-
-if __name__ == '__main__':
-    initializedb(create=main, prime_cache=prime_cache)
-    sys.exit(0)
