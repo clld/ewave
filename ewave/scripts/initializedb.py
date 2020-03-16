@@ -39,10 +39,11 @@ def main(args):
         name='eWAVE',
         description='The Electronic World Atlas of Varieties of English',
         domain='ewave-atlas.org',
-        published=date(2013, 11, 15),  # FIXME!
+        published=date.today(),
         license='http://creativecommons.org/licenses/by/3.0/',
         contact='bernd.kortmann@anglistik.uni-freiburg.de',
         jsondata={
+            'doi': args.doi,
             'license_icon': 'cc-by.png',
             'license_name': 'Creative Commons Attribution 3.0 Unported License'})
     DBSession.add(dataset)
