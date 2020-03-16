@@ -5,6 +5,7 @@ import pytest
     "method,path",
     [
         ('get_html', '/'),
+        ('get_html', '/introduction'),
         ('get_html', '/languages'),
         ('get_dt', '/languages'),
         ('get_dt', '/languages?iSortingCols=1&iSortCol_0=3&sSearch_3=a'),

@@ -750,8 +750,8 @@ Pidgin, or Creole. The following classifications were used:</p>
     &nbsp;Thus, since the launch of <i>eWAVE</i>
     <i>1.0</i> in November 2011, quite a few changes
     and improvements have been made. With regard to the data, the most
-    important of these are a number of corrections to feature ratings
-    (see <a href="${request.route_url('changes')}">Home &gt; History</a>), the addition of two completely new data
+    important of these are a number of corrections to feature ratings,
+    the addition of two completely new data
     sets (Philippine English and Cape Flats English), and more than
     2,400 new examples. Other new features include a list of
     references, export of filtered tables, and changes in filtering
