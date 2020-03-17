@@ -29,5 +29,7 @@
 
 % if ctx.values[0].sentence_assocs:
 <h3>Examples</h3>
-${util.sentences(ctx.values[0])}
+    <div class="alert alert-success">
+        ${util.sentences(ctx.values[0])}
+    </div>
 % endif

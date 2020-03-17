@@ -9,6 +9,7 @@ from clld.db.models import common
 from clld.lib import bibtex
 from clldutils.misc import slug
 from pycldf import Sources
+from nameparser import HumanName
 
 import ewave
 from ewave import models
@@ -51,13 +52,14 @@ def main(args):
     ed_pattern = re.compile('ed(?P<ord>[0-9]+)$')
     for c in args.cldf['contributors.csv']:
         contrib = data.add(
-            common.Contributor,
+            models.WaveContributor,
             c['ID'],
             id=c['ID'],
             name=c['Name'],
             email=c['Email'],
             url=c['URL'],
             address=c['Address'],
+            sortkey=HumanName(c['Name']).last,
         )
         m = ed_pattern.match(c['ID'])
         if m:
@@ -100,7 +102,7 @@ def main(args):
         for i, cid in enumerate(lang['Contributor_ID']):
             DBSession.add(common.ContributionContributor(
                 contribution=c,
-                contributor=data['Contributor'][cid],
+                contributor=data['WaveContributor'][cid],
                 ord=i+1,
             ))
 

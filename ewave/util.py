@@ -4,6 +4,8 @@ from clld.web.util.helpers import get_referents, map_marker_img, get_adapter
 from clld.web.util.htmllib import HTML, literal
 from clld.interfaces import IRepresentation
 
+from clld.web import app
+
 from ewave import models
 
 

@@ -68,11 +68,17 @@ def main(global_config, **settings):
         'contributor': '/authors/{id:[^/\.]+}',
         'contributions': '/languages',
         'contribution': '/languages/{id:[^/\.]+}',
-        'languages': '/varieties',
-        'language': '/varieties/{id:[^/\.]+}',
     }
     config = Configurator(settings=settings)
     config.include('clldmpg')
     config.registry.registerUtility(WaveMapMarker(), interfaces.IMapMarker)
     config.registry.registerUtility(link_attrs, interfaces.ILinkAttrs)
+
+    config.add_301(
+        "/varieties",
+        lambda req: req.route_url('contributions'))
+    config.add_301(
+        "/varieties/{id:[^/\.]+}",
+        lambda req: req.route_url('contribution', id=req.matchdict['id']))
+
     return config.make_wsgi_app()

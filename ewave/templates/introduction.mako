@@ -62,7 +62,7 @@
     <%util:well title="Contents">
     <ul class="nav nav-pills nav-stacked">
         <li><a href="#history">History and people behind <i>eWAVE</i></a></li>
-        <li><a href="#varieties">The 76 varieties, Pidgins and Creoles in the <i>WAVE</i> sample</a></li>
+        <li><a href="#varieties">The ${vcount} varieties, Pidgins and Creoles in the <i>WAVE</i> sample</a></li>
         <li><a href="#types">Variety types covered</a></li>
         <li><a href="#domains">Domains of grammar covered in <i>WAVE</i></a></li>
         <li><a href="#ratings">Feature ratings</a></li>
@@ -119,7 +119,7 @@
 
 <%util:section id="varieties" level="${4}">
     <%def name="title()">
-        The 76 varieties, Pidgins and Creoles in the <i>eWAVE</i> sample
+        The ${vcount} varieties, Pidgins and Creoles in the <i>eWAVE</i> sample
     </%def>
     <p>Table 1 provides an overview of the varieties,
     Pidgins and Creoles sampled in <i>eWAVE</i> and
@@ -289,7 +289,7 @@ Malaysian E</p>
 <p class="P27">&nbsp;</p>
 </td>
 <td style="text-align:left;width:1.4049in;" class="Table1_A1">
-<p class="P32">Aboriginal E, Australian E, Australian Vernacular
+<p class="P32">Aboriginal E, Australian E, Australian Vernacular, Croker Island English
 E</p>
 </td>
 <td style="text-align:left;width:1.3167in;" class="Table1_A1">
@@ -322,7 +322,7 @@ Tok Pisin</p>
 
 
 <%util:section title="Variety types covered" id="types" level="${4}">
-<p>The 76 data sets in the <i>eWAVE</i> sample fall into 5
+<p>The ${vcount} data sets in the <i>eWAVE</i> sample fall into 5
 broad classes of variety types, listed and briefly characterized
 below. The experts were asked to classify “their” variety as
 belonging to one of these variety types.</p>
@@ -631,7 +631,7 @@ in</span> <i>eWAVE</i></p>
         Feature ratings
     </%def>
 <p>The information in the <i>eWAVE</i>
-database consists of judgements by top experts on each of the 76
+database consists of judgements by top experts on each of the ${vcount}
 varieties, Pidgins and Creoles on the frequency with which each of
 the 235 features can be encountered in the relevant variety,
 Pidgin, or Creole. The following classifications were used:</p>
@@ -662,7 +662,7 @@ Pidgin, or Creole. The following classifications were used:</p>
 
 <%util:section id="statistics" level="${4}">
     <%def name="title()">
-        <i>eWAVE 2.0</i> statistics
+        <i>eWAVE</i> statistics
     </%def>
     <ol>
         <li>

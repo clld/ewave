@@ -5,13 +5,14 @@ from sqlalchemy import (
     Integer,
     Float,
     ForeignKey,
+    Unicode,
 )
 from sqlalchemy.orm import relationship, backref
 
 from clld import interfaces
 from clld.db.meta import Base, CustomModelMixin
 from clld.db.models.common import (
-    Parameter, Language, Contribution, IdNameDescriptionMixin,
+    Parameter, Language, Contribution, IdNameDescriptionMixin, Contributor,
 )
 
 
@@ -44,6 +45,12 @@ class Variety(CustomModelMixin, Language):
         res = super(Variety, self).__json__(req)
         res['type'] = {'name': self.type.name, 'pk': self.type.pk}
         return res
+
+
+@implementer(interfaces.IContributor)
+class WaveContributor(CustomModelMixin, Contributor):
+    pk = Column(Integer, ForeignKey('contributor.pk'), primary_key=True)
+    sortkey = Column(Unicode)
 
 
 @implementer(interfaces.IContribution)

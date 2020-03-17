@@ -6,10 +6,11 @@ from clld.web import datatables
 from clld.web.datatables.base import Col, LinkCol, LinkToMapCol, PercentCol, IntegerIdCol
 from clld.web.datatables.value import ValueNameCol
 from clld.web.datatables.contribution import ContributorsCol, CitationCol
+from clld.web.datatables.contributor import Contributors
 from clld.web.datatables.sentence import Sentences as BaseSentences
 from clld.web.util.helpers import map_marker_img
 
-from ewave.models import Region, VarietyType, Variety, Feature, FeatureCategory
+from ewave.models import Region, VarietyType, Variety, Feature, FeatureCategory, WaveContributor
 
 
 def choices(col, order=None):
@@ -215,8 +216,19 @@ class Values(datatables.Values):
         return [_ValueNameCol(self, 'name')]
 
 
+class NameCol(LinkCol):
+    def order(self):
+        return WaveContributor.sortkey
+
+
+class Informants(Contributors):
+    def col_defs(self):
+        return [NameCol(self, 'name')] + Contributors.col_defs(self)[1:]
+
+
 def includeme(config):
     config.register_datatable('contributions', WaveContributions)
+    config.register_datatable('contributors', Informants)
     config.register_datatable('parameters', Features)
     config.register_datatable('values', Values)
     config.register_datatable('sentences', Sentences)
