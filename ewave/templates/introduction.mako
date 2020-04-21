@@ -105,13 +105,13 @@
     <i>eWAVE</i> was meant to allow
     immediate comparisons with other large databases on grammatical
     variation, notably <i>WALS</i>
-    (${h.external_link('http://wals.info', label="The World Atlas of Language Structures")};
+    (${h.external_link('https://wals.info', label="The World Atlas of Language Structures")};
     Dryer and Haspelmath, eds. 2011) and
     <i>APiCS Online</i>
-    (${h.external_link('http://apics-online.info', label="Atlas of Pidgin and Creole Structures Online")};
+    (${h.external_link('https://apics-online.info', label="Atlas of Pidgin and Creole Structures Online")};
     Michaelis, Maurer, Haspelmath, Huber, eds. 2013), both developed at
     the
-    ${h.external_link('http://www.eva.mpg.de/', label="Max Planck Institute for Evolutionary Anthropology (Leipzig)")}.
+    ${h.external_link('https://www.eva.mpg.de/', label="Max Planck Institute for Evolutionary Anthropology (Leipzig)")}.
     It was a unique opportunity that the same people who were trusted with
     programming <i>APiCS</i> were also allowed to spend a significant amount of their time
     programming <i>eWAVE</i>.</p>

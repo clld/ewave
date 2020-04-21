@@ -22,8 +22,8 @@
     Most notably, there have been substantial changes in the feature ratings of Kenyan English.
 </p>
 <p>
-    The new version of eWAVE also contains Glottocodes for 65 of the 77 varieties based on the classification to
-    be released with Glottolog 4.2. These codes serve as unique and persistent identifiers and may facilitate
+    The new version of eWAVE also contains Glottocodes for 65 of the 77 varieties based on the classification
+    of Glottolog 4.2.1. These codes serve as unique and persistent identifiers and may facilitate
     computational matching and retrieval of specific varieties, also across different databases. However, in some
     cases, in particular for dialects of English, an exact one-to-one match between eWAVE varieties and the Glottolog
     classification was not possible.

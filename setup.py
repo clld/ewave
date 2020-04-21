@@ -20,7 +20,7 @@ setup(
     include_package_data=True,
     zip_safe=False,
     install_requires=[
-        'clld>=5.2',
+        'clld>=6',
         'clldmpg>=3.5',
         'sqlalchemy',
         'waitress',
