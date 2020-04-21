@@ -41,6 +41,11 @@ class Variety(CustomModelMixin, Language):
     region = relationship(Region, backref='varieties')
     type = relationship(VarietyType, backref='varieties')
 
+    @property
+    def glottocode(self):
+        if self.languageidentifier:
+            return self.languageidentifier[0].identifier.name
+
     def __json__(self, req):
         res = super(Variety, self).__json__(req)
         res['type'] = {'name': self.type.name, 'pk': self.type.pk}

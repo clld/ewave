@@ -3,6 +3,8 @@
 <%! active_menu_item = "contributions" %>
 <%block name="title">${ctx.name}</%block>
 
+
+
 <h2>${ctx.name}</h2>
 ${h.coins(request, ctx)}
 ${h.text2html(ctx.description or '', mode='p', sep='\n')}
@@ -10,6 +12,8 @@ ${h.text2html(ctx.description or '', mode='p', sep='\n')}
 ${request.get_datatable('values', h.models.Value, language=ctx.variety).render()}
 
 <%def name="sidebar()">
+    ${util.codes(ctx.variety)}
+    <div style="clear: right;"> </div>
     <%util:well title="Informant">
         ${h.linked_contributors(request, ctx)}
         ${h.cite_button(request, ctx)}

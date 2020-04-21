@@ -9,6 +9,8 @@ from clld.web.datatables.contribution import ContributorsCol, CitationCol
 from clld.web.datatables.contributor import Contributors
 from clld.web.datatables.sentence import Sentences as BaseSentences
 from clld.web.util.helpers import map_marker_img
+from clld.web.util.htmllib import HTML
+from clld.web.util import glottolog
 
 from ewave.models import Region, VarietyType, Variety, Feature, FeatureCategory, WaveContributor
 
@@ -76,6 +78,18 @@ class TypeCol(Col):
         return self.dt.aliased_variety.type_pk
 
 
+class GlottocodeCol(Col):
+    __kw__ = dict(bSearchable=False, bSortable=False)
+
+    def format(self, item):
+        if item.variety.glottocode:
+            return HTML.a(
+                item.variety.glottocode,
+                title='visit {0} in Glottolog'.format(item.variety.name),
+                href=glottolog.url(item.variety.glottocode))
+        return ''
+
+
 class WaveContributions(datatables.Contributions):
     def __init__(self, *args, **kw):
         super(WaveContributions, self).__init__(*args, eid='Values', **kw)
@@ -94,6 +108,7 @@ class WaveContributions(datatables.Contributions):
             ContributorsCol(self, 'contributors', bSearchable=False, bSortable=False),
             TypeCol(self, 'type'),
             RegionCol(self, 'region'),
+            GlottocodeCol(self, 'glottocode'),
             LinkToMapCol(self, 'm', get_object=lambda i: i.variety),
             CitationCol(self, 'cite', bSearchable=False, bSortable=False),
         ]

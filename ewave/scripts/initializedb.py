@@ -3,7 +3,7 @@ import re
 from collections import defaultdict
 
 from sqlalchemy.orm import joinedload
-from clld.scripts.util import Data, bibtex2source
+from clld.scripts.util import Data, bibtex2source, add_language_codes
 from clld.db.meta import DBSession
 from clld.db.models import common
 from clld.lib import bibtex
@@ -93,6 +93,8 @@ def main(args):
             region=data['Region'][lang['Region_ID']],
             type=data['VarietyType'][lang['Type_ID']],
         )
+        if lang['Glottocode']:
+            add_language_codes(data, l, None, glottocode=lang['Glottocode'])
         c = data.add(
             models.WaveContribution, lang['ID'],
             id=str(lang['ID']),
