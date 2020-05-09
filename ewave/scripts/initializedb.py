@@ -3,7 +3,7 @@ import re
 from collections import defaultdict
 
 from sqlalchemy.orm import joinedload
-from clld.scripts.util import Data, bibtex2source, add_language_codes
+from clld.cliutil import Data, bibtex2source, add_language_codes
 from clld.db.meta import DBSession
 from clld.db.models import common
 from clld.lib import bibtex
@@ -34,6 +34,7 @@ VARIETY_TYPE_ICONS = {
 
 def main(args):
     data = Data()
+    doi = input('DOI of the released dataset: ')
 
     dataset = common.Dataset(
         id=ewave.__name__,
@@ -44,7 +45,7 @@ def main(args):
         license='http://creativecommons.org/licenses/by/3.0/',
         contact='bernd.kortmann@anglistik.uni-freiburg.de',
         jsondata={
-            'doi': args.doi,
+            'doi': doi,
             'license_icon': 'cc-by.png',
             'license_name': 'Creative Commons Attribution 3.0 Unported License'})
     DBSession.add(dataset)

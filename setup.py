@@ -20,8 +20,8 @@ setup(
     include_package_data=True,
     zip_safe=False,
     install_requires=[
-        'clld>=6',
-        'clldmpg>=3.5',
+        'clld>=7.1',
+        'clldmpg>=4',
         'sqlalchemy',
         'waitress',
     ],
@@ -33,7 +33,7 @@ setup(
         'test': [
             'mock',
             'psycopg2',
-            'pytest>=3.1',
+            'pytest>=5.4',
             'pytest-clld',
             'pytest-mock',
             'pytest-cov',
@@ -44,9 +44,6 @@ setup(
     },
     test_suite="ewave",
     entry_points={
-        'console_scripts': [
-            'ewave-app=ewave.__main__:main',
-        ],
         'paste.app_factory': [
             'main = ewave:main',
         ],
