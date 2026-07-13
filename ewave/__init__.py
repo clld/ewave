@@ -65,9 +65,9 @@ def main(global_config, **settings):
     """
     settings['route_patterns'] = {
         'contributors': '/authors',
-        'contributor': '/authors/{id:[^/\.]+}',
+        'contributor': r'/authors/{id:[^/\.]+}',
         'contributions': '/languages',
-        'contribution': '/languages/{id:[^/\.]+}',
+        'contribution': r'/languages/{id:[^/\.]+}',
     }
     config = Configurator(settings=settings)
     config.include('clldmpg')
@@ -78,7 +78,7 @@ def main(global_config, **settings):
         "/varieties",
         lambda req: req.route_url('contributions'))
     config.add_301(
-        "/varieties/{id:[^/\.]+}",
+        r"/varieties/{id:[^/\.]+}",
         lambda req: req.route_url('contribution', id=req.matchdict['id']))
 
     return config.make_wsgi_app()

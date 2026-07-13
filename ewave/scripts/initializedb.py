@@ -34,7 +34,7 @@ VARIETY_TYPE_ICONS = {
 
 def main(args):
     data = Data()
-    doi = input('DOI of the released dataset: ')
+    doi = '10.5281/zenodo.3603136'
 
     dataset = common.Dataset(
         id=ewave.__name__,
