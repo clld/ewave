@@ -1,4 +1,3 @@
-from datetime import date
 import re
 from collections import defaultdict
 
@@ -41,7 +40,7 @@ def main(args):
         name='eWAVE',
         description='The Electronic World Atlas of Varieties of English',
         domain='ewave-atlas.org',
-        published=date.today(),
+        published='2020-03-16',
         license='http://creativecommons.org/licenses/by/3.0/',
         contact='bernd.kortmann@anglistik.uni-freiburg.de',
         jsondata={

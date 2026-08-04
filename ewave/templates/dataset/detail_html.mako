@@ -81,7 +81,7 @@
     offers
     perspectivizing accounts of the data sets in eWAVE as well as large-scale comparisons and synopses across the
     individual variety types and Anglophone world regions. Read more
-    ${h.external_link('http://www.degruyter.de/view/product/181631?rskey=FRLlvj&amp;result=1&amp;q=kortmann%20wave', label='here')}
+    ${h.external_link('https://doi.org/10.1515/9783110280128', label='here')}
     .
 </p>
 
@@ -116,8 +116,8 @@
 
 <h3>How to cite eWAVE</h3>
 <p>
-    eWAVE in general can be referred to in the following way: ${h.cite_button(request, ctx)}
+    eWAVE in general can be referred to in the following way:
 </p>
 <blockquote>
-    ${h.newline2br(citation.render(ctx, request))|n}
+    Kortmann, B., Lunkenheimer, K.& Ehret, K. (2020). The Electronic World Atlas of Varieties of English (Version v3.0.3) [Dataset]. Zenodo. https://doi.org/10.5281/zenodo.21789749
 </blockquote>
