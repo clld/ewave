@@ -24,6 +24,8 @@ setup(
         'clldmpg>=4.2',
         'sqlalchemy',
         'waitress',
+        'pycldf',
+        'psycopg2',
     ],
     extras_require={
         'dev': [
