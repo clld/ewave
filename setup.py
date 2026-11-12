@@ -20,12 +20,13 @@ setup(
     include_package_data=True,
     zip_safe=False,
     install_requires=[
-        'clld>=9.2.2',
+        'clld>=11.7.0',
         'clldmpg>=4.2',
         'sqlalchemy',
         'waitress',
         'pycldf',
         'psycopg2',
+        'nameparser>=2.0',
     ],
     extras_require={
         'dev': [

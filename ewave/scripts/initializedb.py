@@ -8,7 +8,7 @@ from clld.db.models import common
 from clld.lib import bibtex
 from clldutils.misc import slug
 from pycldf import Sources
-from nameparser import HumanName
+import nameparser
 
 import ewave
 from ewave import models
@@ -59,7 +59,7 @@ def main(args):
             email=c['Email'],
             url=c['URL'],
             address=c['Address'],
-            sortkey=HumanName(c['Name']).last,
+            sortkey=nameparser.parse(c['Name']).family,
         )
         m = ed_pattern.match(c['ID'])
         if m:
